@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="hr_contract_finish_reason_01" model="hr.contract.finish.reason">
+        <field name="name">Acuerdo de las Partes</field>
+    </record>
+
+    <record id="hr_contract_finish_reason_02" model="hr.contract.finish.reason">
+        <field name="name">Despido Intempestivo</field>
+    </record>
+
+    <record id="hr_contract_finish_reason_03" model="hr.contract.finish.reason">
+        <field name="name">Despido por Causales</field>
+    </record>
+
+</odoo>

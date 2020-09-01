@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- REGLAS DE LA LIQUIDACIÓN DE HABERES-->
+    <record id="hr_rule_liq_bon25" model="hr.salary.rule">
+        <field name="name">LIQUIDACIÓN: Bonificación 25% (gasto)</field>
+        <field name="allowed_in_news" eval="True"/>
+        <field name="sequence" eval="10"/>
+        <field name="code">LIQBON25</field>
+        <field name="payroll_type_ids" eval="[(4, ref('payslip_type_liq'))]"/>
+        <field name="category_id" ref="LIQING"/>
+        <field name="condition_select">none</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+value = 0
+if inputs.LIQBON25:
+    for line in payslip.input_line_ids:
+        if line.code == 'LIQBON25':
+            value += line.amount
+result = round(value, 2)
+        </field>
+        <field name="register_id" ref="hr_payroll.contrib_register_employees"/>
+    </record>
+
+    <record id="hr_rule_liq_inddesint" model="hr.salary.rule">
+        <field name="name">LIQUIDACIÓN: Indemnización por despido intempestivo (gasto)</field>
+        <field name="sequence" eval="100"/>
+        <field name="allowed_in_news" eval="True"/>
+        <field name="code">LIQINDDESINT</field>
+        <field name="payroll_type_ids" eval="[(4, ref('payslip_type_liq'))]"/>
+        <field name="category_id" ref="LIQING"/>
+        <field name="condition_select">none</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+value = 0
+if inputs.LIQINDDESINT:
+    for line in payslip.input_line_ids:
+        if line.code == 'LIQINDDESINT':
+            value += line.amount
+result = round(value, 2)
+        </field>
+        <field name="register_id" ref="hr_payroll.contrib_register_employees"/>
+    </record>
+
+    <record id="hr_rule_liq_indemb" model="hr.salary.rule">
+        <field name="name">LIQUIDACIÓN: Indemnización por embarazo (gasto)</field>
+        <field name="sequence" eval="30"/>
+        <field name="allowed_in_news" eval="True"/>
+        <field name="code">LIQINDEMB</field>
+        <field name="payroll_type_ids" eval="[(4, ref('payslip_type_liq'))]"/>
+        <field name="category_id" ref="LIQING"/>
+        <field name="condition_select">none</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+value = 0
+if inputs.LIQINDEMB:
+    for line in payslip.input_line_ids:
+        if line.code == 'LIQINDEMB':
+            value += line.amount
+result = round(value, 2)
+        </field>
+        <field name="register_id" ref="hr_payroll.contrib_register_employees"/>
+    </record>
+
+    <record id="hr_rule_liq_inddirsin" model="hr.salary.rule">
+        <field name="name">LIQUIDACIÓN: Indemnización por dirigencia sindical (gasto)</field>
+        <field name="sequence" eval="30"/>
+        <field name="allowed_in_news" eval="True"/>
+        <field name="code">LIQINDDIRSIN</field>
+        <field name="payroll_type_ids" eval="[(4, ref('payslip_type_liq'))]"/>
+        <field name="category_id" ref="LIQING"/>
+        <field name="condition_select">none</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+value = 0
+if inputs.LIQINDDIRSIN:
+    for line in payslip.input_line_ids:
+        if line.code == 'LIQINDDIRSIN':
+            value += line.amount
+result = round(value, 2)
+        </field>
+        <field name="register_id" ref="hr_payroll.contrib_register_employees"/>
+    </record>
+
+    <record id="hr_rule_liq_indenfnopro" model="hr.salary.rule">
+        <field name="name">LIQUIDACIÓN: Indemnización por enfermedad no profesional (gasto)</field>
+        <field name="sequence" eval="30"/>
+        <field name="allowed_in_news" eval="True"/>
+        <field name="code">LIQINDENFNOPROF</field>
+        <field name="payroll_type_ids" eval="[(4, ref('payslip_type_liq'))]"/>
+        <field name="category_id" ref="LIQING"/>
+        <field name="condition_select">none</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+value = 0
+if inputs.LIQINDENFNOPROF:
+    for line in payslip.input_line_ids:
+        if line.code == 'LIQINDENFNOPROF':
+            value += line.amount
+result = round(value, 2)
+        </field>
+        <field name="register_id" ref="hr_payroll.contrib_register_employees"/>
+    </record>
+
+
+    <record id="hr_rule_liq_inddis" model="hr.salary.rule">
+        <field name="name">LIQUIDACIÓN: Indemnización por discapacidad (gasto)</field>
+        <field name="sequence" eval="30"/>
+        <field name="allowed_in_news" eval="True"/>
+        <field name="code">LIQINDDIS</field>
+        <field name="payroll_type_ids" eval="[(4, ref('payslip_type_liq'))]"/>
+        <field name="category_id" ref="LIQING"/>
+        <field name="condition_select">none</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+value = 0
+if inputs.LIQINDDIS:
+    for line in payslip.input_line_ids:
+        if line.code == 'LIQINDDIS':
+            value += line.amount
+result = round(value, 2)
+        </field>
+        <field name="register_id" ref="hr_payroll.contrib_register_employees"/>
+    </record>
+
+    <record id="hr_rule_liq_indterantpla" model="hr.salary.rule">
+        <field name="name">LIQUIDACIÓN: Indemnización por terminación antes de plazo (gasto)</field>
+        <field name="sequence" eval="30"/>
+        <field name="allowed_in_news" eval="True"/>
+        <field name="code">LIQINDTERANTPLA</field>
+        <field name="payroll_type_ids" eval="[(4, ref('payslip_type_liq'))]"/>
+        <field name="category_id" ref="LIQING"/>
+        <field name="condition_select">none</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+value = 0
+if inputs.LIQINDTERANTPLA:
+    for line in payslip.input_line_ids:
+        if line.code == 'LIQINDTERANTPLA':
+            value += line.amount
+result = round(value, 2)
+        </field>
+        <field name="register_id" ref="hr_payroll.contrib_register_employees"/>
+    </record>
+
+    <record id="hr_rule_liq_13" model="hr.salary.rule">
+        <field name="name">LIQUIDACIÓN: Décima tercera remuneración en liquidaciones</field>
+        <field name="sequence" eval="30"/>
+        <field name="allowed_in_news" eval="True"/>
+        <field name="code">LIQ13</field>
+        <field name="payroll_type_ids" eval="[(4, ref('payslip_type_liq'))]"/>
+        <field name="category_id" ref="LIQING"/>
+        <field name="condition_select">none</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+value = 0
+if inputs.LIQ13:
+    for line in payslip.input_line_ids:
+        if line.code == 'LIQ13':
+            value += line.amount
+result = round(value, 2)
+        </field>
+        <field name="register_id" ref="hr_payroll.contrib_register_employees"/>
+    </record>
+
+    <record id="hr_rule_liq_14" model="hr.salary.rule">
+        <field name="name">LIQUIDACIÓN: Décimo cuarta remuneración en liquidaciones</field>
+        <field name="sequence" eval="30"/>
+        <field name="allowed_in_news" eval="True"/>
+        <field name="code">LIQ14</field>
+        <field name="payroll_type_ids" eval="[(4, ref('payslip_type_liq'))]"/>
+        <field name="category_id" ref="LIQING"/>
+        <field name="condition_select">none</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+value = 0
+if inputs.LIQ14:
+    for line in payslip.input_line_ids:
+        if line.code == 'LIQ14':
+            value += line.amount
+result = round(value, 2)
+        </field>
+        <field name="register_id" ref="hr_payroll.contrib_register_employees"/>
+    </record>
+
+    <record id="hr_rule_liq_vac" model="hr.salary.rule">
+        <field name="name">LIQUIDACIÓN: Vacaciones de años anteriores</field>
+        <field name="sequence" eval="100"/>
+        <field name="allowed_in_news" eval="True"/>
+        <field name="code">LIQVAC</field>
+        <field name="payroll_type_ids" eval="[(4, ref('payslip_type_liq'))]"/>
+        <field name="category_id" ref="LIQING"/>
+        <field name="condition_select">none</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+value = 0
+if inputs.LIQVAC:
+    for line in payslip.input_line_ids:
+        if line.code == 'LICVAC':
+            value += line.amount
+result = round(value, 2)
+        </field>
+        <field name="register_id" ref="hr_payroll.contrib_register_employees"/>
+    </record>
+
+    <record id="hr_rule_liq_vacultper" model="hr.salary.rule">
+        <field name="name">LIQUIDACIÓN: Vacaciones del último periodo</field>
+        <field name="sequence" eval="100"/>
+        <field name="allowed_in_news" eval="True"/>
+        <field name="code">LIQVACULTPER</field>
+        <field name="payroll_type_ids" eval="[(4, ref('payslip_type_liq'))]"/>
+        <field name="category_id" ref="LIQING"/>
+        <field name="condition_select">none</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+value = 0
+if inputs.LIQVACULTPER:
+    for line in payslip.input_line_ids:
+        if line.code == 'LIQVACULTPER':
+            value += line.amount
+result = round(value, 2)
+        </field>
+        <field name="register_id" ref="hr_payroll.contrib_register_employees"/>
+    </record>
+
+    <record id="hr_rule_liq_otros_ingresos" model="hr.salary.rule">
+        <field name="name">LIQUIDACIÓN: Otros ingresos</field>
+        <field name="sequence" eval="100"/>
+        <field name="allowed_in_news" eval="True"/>
+        <field name="code">LIQOING</field>
+        <field name="payroll_type_ids" eval="[(4, ref('payslip_type_liq'))]"/>
+        <field name="category_id" ref="LIQING"/>
+        <field name="condition_select">none</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+value = 0
+if inputs.LIQOING:
+    for line in payslip.input_line_ids:
+        if line.code == 'LIQOING':
+            value += line.amount
+result = round(value, 2)
+        </field>
+        <field name="register_id" ref="hr_payroll.contrib_register_employees"/>
+    </record>
+
+    <record id="hr_rule_liq_valcaliess" model="hr.salary.rule">
+        <field name="name">LIQUIDACIÓN: Valor calculado que debe aportar al IESS</field>
+        <field name="sequence" eval="100"/>
+        <field name="allowed_in_news" eval="True"/>
+        <field name="code">LIQVALCALIESS</field>
+        <field name="payroll_type_ids" eval="[(4, ref('payslip_type_liq'))]"/>
+        <field name="category_id" ref="LIQDED"/>
+        <field name="condition_select">none</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+value = 0
+if inputs.LIQVALCALIESS:
+    for line in payslip.input_line_ids:
+        if line.code == 'LIQVALCALIESS':
+            value += line.amount
+result = round(value, 2)
+        </field>
+        <field name="register_id" ref="hr_payroll.contrib_register_employees"/>
+    </record>
+
+    <record id="hr_rule_liq_otras_deducciones" model="hr.salary.rule">
+        <field name="name">LIQUIDACIÓN: Otras deducciones (egresos)</field>
+        <field name="sequence" eval="100"/>
+        <field name="allowed_in_news" eval="True"/>
+        <field name="code">LIQODED</field>
+        <field name="payroll_type_ids" eval="[(4, ref('payslip_type_liq'))]"/>
+        <field name="category_id" ref="LIQDED"/>
+        <field name="condition_select">none</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+value = 0
+if inputs.LIQODED:
+    for line in payslip.input_line_ids:
+        if line.code == 'LIQODED':
+            value += line.amount
+result = round(value, 2)
+        </field>
+        <field name="register_id" ref="hr_payroll.contrib_register_employees"/>
+    </record>
+
+    <!-- Para borrar, corregir todas las lines de payroll que usen esta regla -->
+    <record id="hr_rule_net_liquidacion" model="hr.salary.rule">
+        <field name="name">DEPRECIADO: NO UTILIZAR</field>
+        <field name="sequence" eval="100"/>
+        <field name="allowed_in_news" eval="False"/>
+        <field name="code">NOUSAR</field>
+        <field name="category_id" ref="LIQDED"/>
+        <field name="condition_select">none</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+result = 0
+        </field>
+    </record>
+
+</odoo>

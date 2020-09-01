@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+        <!-- Salary Structures -->
+
+    <!-- Permite que la regla salarial base sea actualizada -->
+    <function name="write" model="ir.model.data">
+        <function name="search" model="ir.model.data">
+            <value eval="[('module', '=', 'hr_payroll'), ('name', '=', 'structure_base')]"/>
+        </function>
+        <value eval="{'noupdate': False}" />
+    </function>
+
+    <record id="hr_payroll.structure_base" model="hr.payroll.structure">
+      <field name="code">BASE</field>
+      <field name="name">ESTRUCTURA SALARIAL GENERAL</field>
+      <field eval="[(6, 0, [
+                   ref('hr_payroll.hr_rule_basic'),
+                   ref('hr_rule_inggrav'),
+                   ref('hr_rule_ingnograv'),
+                   ref('hr_rule_he025'),
+                   ref('hr_rule_he050'),
+                   ref('hr_rule_he100'),
+                   ref('hr_rule_gratificacion'),
+                   ref('hr_rule_commissions'),
+                   ref('hr_rule_reserve_funds'),
+                   ref('hr_rule_reserve_funds_as_contribution'),
+                   ref('hr_rule_reserve_funds_as_contribution_expense'),
+                   ref('hr_rule_13ing_salary'),
+                   ref('hr_rule_13ing_accumulated_salary'),
+                   ref('hr_rule_14ing_accumulated_salary'),
+                   ref('hr_rule_14ing_salary'),
+                   ref('hr_rule_personal_ir'),
+                   ref('hr_rule_personal_ir_salario_neto'),
+                   ref('hr_rule_adelanto'),
+                   ref('hr_rule_biweekly'),
+                   ref('hr_rule_deduction_biweekly'),
+                   ref('hr_rule_deduction_invoice'),
+                   ref('hr_rule_descuentos'),
+                   ref('hr_rule_descuentos_multas'),
+                   ref('hr_rule_deducciones'),
+                   ref('hr_rule_deducciones_com'),
+                   ref('hr_rule_deduction_net_negative'),
+                   ref('hr_rule_net_negative'),
+                   ref('hr_rule_personal_loan'),
+                   ref('hr_rule_personal_loan_13'),
+                   ref('hr_rule_personal_loan_14'),
+                   ref('hr_rule_personal_iess'),
+                   ref('hr_rule_personal_iess_salario_neto'),
+                   ref('hr_rule_representante_legal_iess'),
+                   ref('hr_rule_iess_prestamo_quirografario'),
+                   ref('hr_rule_iess_prestamo_hipotecario'),
+                   ref('hr_rule_prestamos_iess'),
+                   ref('hr_rule_13_salary'),
+                   ref('hr_rule_13_salary_expense'),
+                   ref('hr_rule_14_salary'),
+                   ref('hr_rule_14_salary_expense'),
+                   ref('hr_rule_company_iess'),
+                   ref('hr_rule_company_iess_expense'),
+                   ref('hr_rule_vacaciones'),
+                   ref('hr_rule_vacaciones_expense'),
+                   ref('hr_rule_rjcnj'),
+                   ref('hr_payroll.hr_rule_net'),
+                   ref('l10n_ec_hr_payroll.hr_rule_ded_100_exp'),
+                   ref('l10n_ec_hr_payroll.hr_rule_ded_75_exp'),
+                   ref('l10n_ec_hr_payroll.hr_rule_ded_66_exp'),
+                   ref('l10n_ec_hr_payroll.hr_rule_salario_digno'),
+                   ref('l10n_ec_hr_payroll.hr_rule_utilidades'),
+                   ref('hr_rule_liq_bon25'),
+                   ref('hr_rule_liq_inddesint'),
+                   ref('hr_rule_liq_indemb'),
+                   ref('hr_rule_liq_indemb'),
+                   ref('hr_rule_liq_inddirsin'),
+                   ref('hr_rule_liq_indenfnopro'),
+                   ref('hr_rule_liq_inddis'),
+                   ref('hr_rule_liq_otros_ingresos'),
+                   ref('hr_rule_liq_otras_deducciones'),
+                   ref('hr_rule_liq_13'),
+                   ref('hr_rule_liq_14'),
+                   ref('hr_rule_liq_vac'),
+                   ref('hr_rule_liq_vacultper'),
+                   ref('hr_rule_liq_valcaliess'),
+                   ])]"
+             name="rule_ids"/>
+      <field name="company_id" ref="base.main_company"/>
+    </record>
+
+    <!-- Para borrar, hacer un update que cambie todos los roles donde se utilice -->
+    <record id="l10n_ec_hr_payroll.structure_liquidacion" model="hr.payroll.structure">
+      <field name="code">LIQUIDACION</field>
+      <field name="name">LIQUIDACIÓN DE HABERES (DEPRECIADO, NO USAR)</field>
+      <field eval="[(6, 0,
+                   [ref('hr_rule_net_liquidacion'),
+                   ref('hr_rule_liq_valcaliess')])]"
+             name="rule_ids"/>
+      <field name="company_id" ref="base.main_company"/>
+    </record>
+
+</odoo>

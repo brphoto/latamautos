@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="hr_contract_type_full_time" model="hr.contract.type">
+        <field name="name">Tiempo Completo</field>
+        <field name="social_benefits" eval="True"/>
+        <field name="halftime" eval="False"/>
+        <field name="for_hours" eval="False"/>
+        <field name="active" eval="True" />
+    </record>
+
+    <record id="hr_contract_type_halftime" model="hr.contract.type">
+        <field name="name">Medio Tiempo</field>
+        <field name="social_benefits" eval="True"/>
+        <field name="halftime" eval="True"/>
+        <field name="for_hours" eval="False"/>
+        <field name="active" eval="True" />
+    </record>
+
+    <record id="hr_contract_type_intern" model="hr.contract.type">
+        <field name="name">Pasantia</field>
+        <field name="social_benefits" eval="False"/>
+        <field name="halftime" eval="False"/>
+        <field name="for_hours" eval="False"/>
+        <field name="active" eval="True" />
+    </record>
+
+    <function name="write" model="ir.model.data">
+        <function name="search" model="ir.model.data">
+            <value eval="[('module', '=', 'hr_contract'), ('name', 'in', ['hr_contract_type_emp', 'hr_contract_type_wrkr', 'hr_contract_type_sub'])]"/>
+        </function>
+        <value eval="{'noupdate': False}" />
+    </function>
+
+    <record id="hr_contract.hr_contract_type_emp" model="hr.contract.type">
+        <field name="active" eval="False" />
+    </record>
+
+    <record id="hr_contract.hr_contract_type_wrkr" model="hr.contract.type">
+        <field name="active" eval="False" />
+    </record>
+
+    <record id="hr_contract.hr_contract_type_sub" model="hr.contract.type">
+        <field name="active" eval="False" />
+    </record>
+
+</odoo>

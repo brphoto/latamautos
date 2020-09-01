@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--<report
+    id="hr_payroll.action_report_payslip_xls"
+    model="hr.payslip"
+    string="Print to XLSX"
+    report_type="xlsx"
+    name="l10n_ec_hr_payroll.hr_payslip_report_xls"
+    file="res_partner"
+    attachment_use="False"
+/>-->
+
+</odoo>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="edit_holiday_status_form" model="ir.ui.view">
+        <field name="name">l10n_ec.edit.hr.leave.type.form</field>
+        <field name="model">hr.leave.type</field>
+        <field name="inherit_id" ref="hr_holidays.edit_holiday_status_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='validation']" position="after">
+                <field name="code"/>
+            </xpath>
+        </field>
+    </record>
+    
+    <record id="hr_leave_view_form_view_inherit" model="ir.ui.view">
+        <field name="name">hr.leave.view.form.inherit</field>
+        <field name="model">hr.leave</field>
+        <field name="inherit_id" ref="hr_holidays.hr_leave_view_form"/>
+        <field name="mode">primary</field>
+        <field name="priority">16</field>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='col_right']" position="replace">
+                <group>
+                    <field name="holiday_type" string="Mode"
+                        groups="hr_holidays.group_hr_holidays_user"/>
+                    <field name="employee_id" groups="hr_holidays.group_hr_holidays_user" attrs="{
+                        'required': [('holiday_type', '=', 'employee')],
+                        'invisible': [('holiday_type', '!=', 'employee')]
+                        }"/>
+                    <field name="mode_company_id" groups="hr_holidays.group_hr_holidays_user" attrs="{
+                        'required': [('holiday_type', '=', 'company')],
+                        'invisible': [('holiday_type', '!=', 'company')]
+                        }"/>
+                    <field name="category_id" groups="hr_holidays.group_hr_holidays_user" attrs="{
+                        'required': [('holiday_type', '=', 'category')],
+                        'invisible': [('holiday_type', '!=','category')]
+                        }"/>
+                    <field name="department_id" groups="hr_holidays.group_hr_holidays_user" attrs="{
+                        'required': [('holiday_type', '=', 'department')],
+                        'invisible': [('holiday_type', 'not in', ('employee', 'department'))]
+                        }"/>
+                    <field name="payslip_status" groups="hr_holidays.group_hr_holidays_manager" widget="toggle_button"/>
+                </group>
+                <div groups="hr_holidays.group_hr_holidays_manager">
+                    <separator string="Comment by Manager"/>
+                    <field name="report_note" placeholder="e.g. Report to the next month..."/>
+                </div>
+            </xpath>
+        </field>
+    </record>
+    
+    <record id="hr_holidays.hr_leave_action_my_view_form" model="ir.actions.act_window.view">
+        <field name="sequence">2</field>
+        <field name="view_mode">form</field>
+        <field name="act_window_id" ref="hr_holidays.hr_leave_action_my"/>
+        <field name="view_id" ref="hr_leave_view_form_view_inherit"/>
+    </record>
+</odoo>

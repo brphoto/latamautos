@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="l10n_ec_hr_job_form_view" model="ir.ui.view">
+        <field name="name">l10n.ec.hr.job.form.view</field>
+        <field name="model">hr.job</field>
+        <field name="inherit_id" ref="hr.view_hr_job_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='department_id']" position="after">
+                <field name="analytic_account_id" />
+            </xpath>
+        </field>
+    </record>
+</odoo>

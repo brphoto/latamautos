@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_l10n_ec_hr_payslip_account_journal" model="ir.ui.view">
+        <field name="name">view.l10n.ec.payslip.account.journal</field>
+        <field name="model">account.journal</field>
+        <field name="inherit_id" ref="account.view_account_journal_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='loss_account_id']" position="before">
+                <field name="payroll_discount" groups="base.group_no_one"/>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Human Resources" attrs="{'invisible': [('payroll_discount', '=', False)]}">
+                    <group>
+                        <field name="payroll_discount_type" attrs="{'required': [('payroll_discount', '=', True)]}"/>
+                        <field name="payroll_type" attrs="{'required': [('payroll_discount', '=', True)]}" widget="selection"/>
+                        <field name="rule_id" attrs="{'required': [('payroll_discount', '=', True)]}" options="{'no_open': True}"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,491 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Permite que la regla salarial gross sea actualizada -->
+    <function name="write" model="ir.model.data">
+        <function name="search" model="ir.model.data">
+            <value eval="[('module', '=', 'hr_payroll'), ('name', '=', 'hr_rule_taxable')]"/>
+        </function>
+        <value eval="{'noupdate': False}" />
+    </function>
+
+    <record id="hr_payroll.hr_rule_taxable" model="hr.salary.rule">
+        <field name="active" eval="False"/>
+    </record>
+
+    <!-- Permite que la regla salarial base sea actualizada -->
+    <function name="write" model="ir.model.data">
+        <function name="search" model="ir.model.data">
+            <value eval="[('module', '=', 'hr_payroll'), ('name', '=', 'hr_rule_basic')]"/>
+        </function>
+        <value eval="{'noupdate': False}" />
+    </function>
+
+    <!-- Ingresos -->
+    <record id="hr_payroll.hr_rule_basic" model="hr.salary.rule">
+        <field name="name">SUELDO (GASTO)</field>
+        <field name="sequence" eval="1"/>
+        <field name="code">BASE</field>
+        <field name="analytic" eval="True"/>
+        <field name="allowed_in_news" eval="False"/>
+        <field name="category_id" ref="hr_payroll.BASIC"/>
+        <field name="payroll_type_ids" eval="[(4, ref('payslip_type_m'))]"/>
+        <field name="condition_select">none</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+if contract.basic_wage and contract.wage != employee.company_id.basic_wage:
+    contracts = contract.search([('basic_wage', '=', True)])
+    if contracts:
+        contracts.write({'wage': employee.company_id.basic_wage})
+
+# Calculamos el sueldo sobre 30 días menos los días
+# que no forman parte del contrato.
+work100 = 30
+if worked_days.OUT:
+    work100 = 30 - worked_days.OUT.number_of_days
+
+wage = payslip.wage or contract.wage
+value = wage/30 * work100
+
+result = round(value, 2)
+        </field>
+    </record>
+
+    <record id="hr_rule_biweekly" model="hr.salary.rule">
+        <field name="name">QUINCENA (GASTO)</field>
+        <field name="sequence" eval="1"/>
+        <field name="biweekly_deduction" eval="True" />
+        <field name="code">ALWQ</field>
+        <field name="category_id" ref="INGNOGRAV"/>
+        <field name="payroll_type_ids" eval="[(4, ref('payslip_type_q'))]"/>
+        <field name="condition_select">none</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+value = 0
+if inputs.ALWQ:
+    for line in payslip.input_line_ids:
+        if line.code == 'ALWQ':
+            value += line.amount
+else:
+    value = 50
+
+result = round(value, 2)
+        </field>
+        <field name="register_id" ref="hr_payroll.contrib_register_employees"/>
+    </record>
+
+    <record id="hr_rule_gratificacion" model="hr.salary.rule">
+        <field name="name">GRATIFICACIONES</field>
+        <field name="sequence" eval="2"/>
+        <field name="code">GRATI</field>
+        <field name="category_id" ref="hr_payroll.ALW"/>
+        <field name="payroll_type_ids" eval="[(4, ref('payslip_type_m'))]"/>
+        <field name="condition_select">python</field>
+        <field name="condition_python">result = (inputs.GRATI or contract.gratificacion)</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+value = 0
+if inputs.GRATI:
+    for line in payslip.input_line_ids:
+        if line.code == 'GRATI':
+            value += line.amount
+if contract.gratificacion:
+    value += contract.gratificacion
+result = round(value, 2)
+        </field>
+    </record>
+
+    <record id="hr_rule_commissions" model="hr.salary.rule">
+        <field name="name">COMISIONES</field>
+        <field name="sequence" eval="2"/>
+        <field name="code">COMI</field>
+        <field name="analytic" eval="True" />
+        <field name="category_id" ref="hr_salary_rule__category_inggrav"/>
+        <field name="payroll_type_ids" eval="[(4, ref('payslip_type_m'))]"/>
+        <field name="condition_select">python</field>
+        <field name="condition_python">result = inputs.COMI</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+value = 0
+if inputs.COMI:
+    for line in payslip.input_line_ids:
+        if line.code == 'COMI':
+            value += line.amount
+result = round(value, 2)
+        </field>
+    </record>
+
+
+    <!-- HORAS EXTRAS -->
+    <record id="hr_rule_he025" model="hr.salary.rule">
+        <field name="name">HORAS JORNADA NOCTURNA (25%)</field>
+        <field name="sequence" eval="2"/>
+        <field name="code">HE025</field>
+        <field name="analytic" eval="True" />
+        <field name="category_id" ref="hr_salary_rule__category_inggrav"/>
+        <field name="payroll_type_ids" eval="[(4, ref('payslip_type_m'))]"/>
+        <field name="condition_select">python</field>
+        <field name="condition_python">result = inputs.HE025</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+value = 0
+if inputs.HE025:
+    for line in payslip.input_line_ids:
+        if line.code == 'HE025':
+            value += line.amount
+result = round(value, 2)
+        </field>
+    </record>
+
+    <record id="hr_rule_he050" model="hr.salary.rule">
+        <field name="name">HORAS SUPLEMENTARIAS (50%)</field>
+        <field name="sequence" eval="2"/>
+        <field name="code">HE050</field>
+        <field name="analytic" eval="True" />
+        <field name="category_id" ref="hr_salary_rule__category_inggrav"/>
+        <field name="payroll_type_ids" eval="[(4, ref('payslip_type_m'))]"/>
+        <field name="condition_select">python</field>
+        <field name="condition_python">result = inputs.HE050</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+value = 0
+if inputs.HE050:
+    for line in payslip.input_line_ids:
+        if line.code == 'HE050':
+            value += line.amount
+result = round(value, 2)
+        </field>
+    </record>
+
+    <record id="hr_rule_he100" model="hr.salary.rule">
+        <field name="name">HORAS EXTRAORDINARIAS (100%)</field>
+        <field name="sequence" eval="2"/>
+        <field name="code">HE100</field>
+        <field name="analytic" eval="True" />
+        <field name="category_id" ref="hr_salary_rule__category_inggrav"/>
+        <field name="payroll_type_ids" eval="[(4, ref('payslip_type_m'))]"/>
+        <field name="condition_select">python</field>
+        <field name="condition_python">result = inputs.HE100</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+value = 0
+if inputs.HE100:
+    for line in payslip.input_line_ids:
+        if line.code == 'HE100':
+            value += line.amount
+result = round(value, 2)
+        </field>
+    </record>
+
+    <record id="hr_rule_inggrav" model="hr.salary.rule">
+        <field name="name">INGRESOS IMPUTABLES</field>
+        <field name="sequence" eval="2"/>
+        <field name="code">INGGRAV</field>
+        <field name="category_id" ref="hr_salary_rule__category_inggrav"/>
+        <field name="payroll_type_ids" eval="[(4, ref('payslip_type_m'))]"/>
+        <field name="condition_select">python</field>
+        <field name="condition_python">result = inputs.INGGRAV</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+value = 0
+if inputs.INGGRAV:
+    for line in payslip.input_line_ids:
+        if line.code == 'INGGRAV':
+            value += line.amount
+result = round(value, 2)
+        </field>
+    </record>
+
+    <record id="hr_rule_ingnograv" model="hr.salary.rule">
+        <field name="name">INGRESOS NO IMPUTABLES</field>
+        <field name="sequence" eval="2"/>
+        <field name="allowed_in_news" eval="True"/>
+        <field name="code">INGNOGRAV</field>
+        <field name="category_id" ref="INGNOGRAV"/>
+        <field name="payroll_type_ids" eval="[(4, ref('payslip_type_m'))]"/>
+        <field name="condition_select">python</field>
+        <field name="condition_python">result = inputs.INGNOGRAV</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+value = 0
+if inputs.INGNOGRAV:
+    for line in payslip.input_line_ids:
+        if line.code == 'INGNOGRAV':
+            value += line.amount
+result = round(value, 2)
+        </field>
+    </record>
+
+    <!-- Cobro de Fondos de Reserva en el Rol de Pagos -->
+    <record id="hr_rule_reserve_funds" model="hr.salary.rule">
+        <field name="name">FONDOS DE RESERVA</field>
+        <field name="code">FRPAG</field>
+        <field name="sequence" eval="3" />
+        <field name="appears_on_payslip" eval="True" />
+        <field name="allowed_in_news" eval="False"/>
+        <field name="payroll_type_ids" eval="[(4, ref('payslip_type_m'))]"/>
+        <field name="condition_select">python</field>
+        <field name="condition_python">result = utils.check_reserve_funds(contract, payslip) and contract.fondos_reserva_rol == True</field>
+        <field name="register_id" ref="hr_payroll.contrib_register_employees"/>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+inggrav = categories.BASIC + categories.INGGRAV
+fr = employee.company_id.porcentaje_fondos_reserva
+work100 = 30
+if worked_days.WORK100:
+    work100 = worked_days.WORK100.number_of_days
+
+value = utils.reserve_funds(contract, payslip, inggrav, work100, fr, 'default')
+if inputs.FRPAG:
+    for line in payslip.input_line_ids:
+        if line.code == 'FRPAG':
+            value = line.amount
+
+result = round(value, 2)
+        </field>
+        <field name="category_id" ref="INGNOGRAV"/>
+        <field name="quantity">1.0</field>
+	</record>
+
+    <!-- Cobro de décimos acumulados en rol-->
+    <record id="hr_rule_13ing_accumulated_salary" model="hr.salary.rule">
+        <field name="name">DECIMO TERCER SUELDO ACUMULADO</field>
+        <field name="sequence" eval="20"/>
+        <field name="appears_on_payslip" eval="True"/>
+        <field name="allowed_in_news" eval="True"/>
+        <field name="code">DTACUM</field>
+        <field name="category_id" ref="INGNOGRAV"/>
+        <field name="payroll_type_ids" eval="[(4, ref('payslip_type_13'))]"/>
+        <field name="condition_select">python</field>
+        <field name="condition_python">
+# El representante legal no recibe 13ro.
+if contract.representante_legal:
+    result = False
+else:
+    result = inputs.DTACUM</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+value = 0
+if inputs.DTACUM:
+    for line in payslip.input_line_ids:
+        if line.code == 'DTACUM':
+            value += line.amount
+result = round(value, 2)
+        </field>
+        <field name="register_id" ref="hr_payroll.contrib_register_employees"/>
+    </record>
+
+    <record id="hr_rule_14ing_accumulated_salary" model="hr.salary.rule">
+        <field name="name">DECIMO CUARTO SUELDO ACUMULADO</field>
+        <field name="sequence" eval="20"/>
+        <field name="appears_on_payslip" eval="True"/>
+        <field name="allowed_in_news" eval="True"/>
+        <field name="code">DCACUM</field>
+        <field name="category_id" ref="INGNOGRAV"/>
+        <field name="payroll_type_ids" eval="[(4, ref('payslip_type_14'))]"/>
+        <field name="condition_select">python</field>
+        <field name="condition_python">
+# El representante legal no recibe 13ro.
+if contract.representante_legal:
+    result = False
+else:
+    result = inputs.DCACUM</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+value = 0
+if inputs.DCACUM:
+    for line in payslip.input_line_ids:
+        if line.code == 'DCACUM':
+            value += line.amount
+result = round(value, 2)
+        </field>
+        <field name="register_id" ref="hr_payroll.contrib_register_employees"/>
+    </record>
+
+    <!-- Cobro de décimos en rol-->
+    <record id="hr_rule_13ing_salary" model="hr.salary.rule">
+        <field name="name">DECIMO TERCERO</field>
+        <field name="sequence" eval="20"/>
+        <field name="appears_on_payslip" eval="True"/>
+        <field name="allowed_in_news" eval="False"/>
+        <field name="code">13PAG</field>
+        <field name="analytic" eval="True" />
+        <field name="category_id" ref="INGNOGRAV"/>
+        <field name="payroll_type_ids" eval="[(4, ref('payslip_type_m'))]"/>
+        <field name="condition_select">python</field>
+        <field name="condition_python">
+# El representante legal no recibe 13ro.
+if contract.representante_legal:
+    result = False
+else:
+    result = contract.decimo_tercero_rol == True</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+valor = (categories.BASIC + categories.INGGRAV) / 12
+result = round(valor, 2)
+        </field>
+        <field name="register_id" ref="hr_payroll.contrib_register_employees"/>
+    </record>
+
+    <record id="hr_rule_14ing_salary" model="hr.salary.rule">
+        <field name="name">DECIMO CUARTO</field>
+        <field name="sequence" eval="21"/>
+        <field name="appears_on_payslip" eval="True"/>
+        <field name="allowed_in_news" eval="False"/>
+        <field name="code">14PAG</field>
+        <field name="analytic" eval="True" />
+        <field name="category_id" ref="INGNOGRAV"/>
+        <field name="payroll_type_ids" eval="[(4, ref('payslip_type_m'))]"/>
+        <field name="condition_select">python</field>
+		<field name="condition_python"># El representante legal no recibe 14to.
+if contract.representante_legal:
+    result = False
+else:
+    result = contract.decimo_cuarto_rol == True</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+dias = 30
+unpaid = 0
+
+for line in payslip.worked_days_line_ids:
+    # Se excluyen los días de ausencias no pagadas y
+    # los días fuera de contrato.
+    if line.code in ('UNPAID', 'OUT'):
+        unpaid += line.number_of_days
+
+basic_wage = employee.company_id.basic_wage
+if contract.type_id.halftime:
+    basic_wage = basic_wage/2.0
+valor = (basic_wage/30)*(dias - unpaid) / 12
+result = round(valor, 2)
+        </field>
+        <field name="register_id" ref="hr_payroll.contrib_register_employees"/>
+    </record>
+
+    <record id="hr_rule_utilidades" model="hr.salary.rule">
+        <field name="name">PARTICIPACION DE UTILIDADES</field>
+        <field name="sequence" eval="21" />
+        <field name="appears_on_payslip" eval="True" />
+        <field name="allowed_in_news" eval="True"/>
+        <field name="code">PTU</field>
+        <field name="category_id" ref="hr_salary_rule__category_inggrav"/>
+        <field name="payroll_type_ids" eval="[(4, ref('payslip_type_utilidades'))]"/>
+        <field name="condition_select">python</field>
+        <field name="condition_python">result = inputs.PTU</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+value = 0
+if inputs.PTU:
+    for line in payslip.input_line_ids:
+        if line.code == 'PTU':
+            value += line.amount
+result = round(value, 2)
+        </field>
+        <field name="note">Es el derecho de los trabajadores sobre el 15%, de la utilidades de la empresa, de este valor el 10% se reparte a todos los trabajadores y el 5% de acuerdo a las cargas familiares, de cada uno. la fecha máxima es el 15 de abril.</field>
+        <field name="register_id" ref="hr_payroll.contrib_register_employees"/>
+	</record>
+
+    <record id="hr_rule_salario_digno" model="hr.salary.rule">
+        <field name="name">PAGO DE SALARIO DIGNO</field>
+        <field name="sequence" eval="21" />
+        <field name="appears_on_payslip" eval="True"/>
+        <field name="allowed_in_news" eval="True"/>
+        <field name="code">PSD</field>
+        <field name="category_id" ref="hr_salary_rule__category_inggrav"/>
+        <field name="payroll_type_ids" eval="[(4, ref('payslip_type_salario_digno'))]"/>
+        <field name="condition_select">python</field>
+        <field name="condition_python">result = inputs.PSD</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+value = 0
+if inputs.PSD:
+    for line in payslip.input_line_ids:
+        if line.code == 'PSD':
+            value += line.amount
+result = round(value, 2)
+        </field>
+        <field name="note">Pago de salario digno a los trabajadores.</field>
+        <field name="register_id" ref="hr_payroll.contrib_register_employees"/>
+    </record>
+
+    <!-- Rules - Net -->
+    <!-- Permite actualizar la regla hr_rule_net -->
+    <function name="write" model="ir.model.data">
+        <function name="search" model="ir.model.data">
+            <value eval="[('module', '=', 'hr_payroll'), ('name', '=', 'hr_rule_net')]"/>
+        </function>
+        <value eval="{'noupdate': False}" />
+    </function>
+
+    <record id="hr_rule_net_negative" model="hr.salary.rule">
+        <field name="name">NETO A RECIBIR NEGATIVO</field>
+        <field name="allowed_in_news" eval="False"/>
+        <field name="payroll_type_ids" eval="[(4, ref('payslip_type_m'))]"/>
+        <field name="sequence" eval="9999"/>
+        <field name="code">NETN</field>
+        <field name="category_id" ref="hr_payroll.ALW"/>
+        <field name="condition_select">python</field>
+        <field name="condition_python">result = round(categories.BASIC + categories.ALW + categories.INGGRAV + categories.INGNOGRAV - categories.DED - categories.SUBIESS - categories.LOAN, 2) &lt; 0 </field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">result = abs(round(categories.BASIC + categories.ALW + categories.INGGRAV + categories.INGNOGRAV - categories.DED - categories.SUBIESS - categories.LOAN, 2))</field>
+        <field name="register_id" ref="hr_payroll.contrib_register_employees"/>
+    </record>
+
+    <record id="hr_payroll.hr_rule_net" model="hr.salary.rule">
+        <field name="name">NETO A RECIBIR</field>
+        <field name="allowed_in_news" eval="False"/>
+        <field name="sequence" eval="10000"/>
+        <field name="code">NET</field>
+        <field name="category_id" ref="hr_payroll.NET"/>
+        <field name="condition_select">none</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">result = round(categories.BASIC + categories.ALW + categories.INGGRAV + categories.INGNOGRAV + categories.LIQING - categories.DED - categories.SUBIESS - categories.LOAN - categories.LIQDED, 2)</field>
+        <field name="register_id" ref="hr_payroll.contrib_register_employees"/>
+    </record>
+
+    <!-- Asume el IESS personal en salario neto-->
+    <record id="hr_rule_personal_iess_salario_neto" model="hr.salary.rule">
+        <field name="name">IESS PERSONAL SALARIO NETO</field>
+        <!-- se debe calcular después de la regla IESSPER -->
+        <field name="sequence" eval="1000"/>
+        <field name="allowed_in_news" eval="False"/>
+        <field name="code">IESSPERNETO</field>
+        <field name="category_id" ref="INGNOGRAV"/>
+        <field name="payroll_type_ids" eval="[(4, ref('payslip_type_m'))]"/>
+        <field name="condition_select">python</field>
+            <field name="condition_python">
+result = contract.iess_personal_salario_neto
+            </field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+try:
+    result = IESSPER
+except:
+    result = 0
+        </field>
+        <field name="register_id" ref="hr_payroll.contrib_register_employees"/>
+    </record>
+
+    <!-- Asume la retención del IR en salario neto-->
+    <record id="hr_rule_personal_ir_salario_neto" model="hr.salary.rule">
+        <field name="name">DEDUCCIÓN IR SALARIO NETO</field>
+        <!-- se debe calcular después de la regla DEDIR -->
+        <field name="sequence" eval="1000"/>
+        <field name="allowed_in_news" eval="False"/>
+        <field name="code">DEDIRNETO</field>
+        <field name="category_id" ref="INGNOGRAV"/>
+        <field name="payroll_type_ids" eval="[(4, ref('payslip_type_m'))]"/>
+        <field name="condition_select">python</field>
+            <field name="condition_python">
+result = contract.retencion_ir_salario_neto
+            </field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+try:
+    result = DEDIR
+except:
+    result = 0
+        </field>
+        <field name="register_id" ref="hr_payroll.contrib_register_employees"/>
+    </record>
+
+</odoo>

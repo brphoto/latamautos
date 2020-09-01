@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+     <!-- Cobro de Fondos de Reserva como provision-->
+     <record id="hr_rule_reserve_funds_as_contribution_expense" model="hr.salary.rule">
+        <field name="name">FONDOS DE RESERVA (GASTO)</field>
+        <field name="code">FRPROVG</field>
+        <field name="analytic" eval="True" />
+        <field name="allowed_in_news" eval="False"/>
+        <field name="sequence" eval="10" />
+        <field name="appears_on_payslip" eval="False" />
+        <field name="payroll_type_ids" eval="[(4, ref('payslip_type_m'))]"/>
+        <field name="condition_select">python</field>
+        <field name="condition_python">result = utils.check_reserve_funds(contract, payslip) and contract.type_id.social_benefits == True</field>
+        <field name="register_id" ref="hr_payroll.contrib_register_employees"/>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+inggrav = categories.BASIC + categories.INGGRAV
+fr = employee.company_id.porcentaje_fondos_reserva
+work100 = 30
+if worked_days.WORK100:
+    work100 = worked_days.WORK100.number_of_days
+result = round(utils.reserve_funds(contract, payslip, inggrav, work100, fr, 'default'), 2)
+        </field>
+        <field name="category_id" ref="COMPG"/>
+        <field name="quantity">1.0</field>
+    </record>
+
+    <record id="hr_rule_reserve_funds_as_contribution" model="hr.salary.rule">
+        <field name="name">FONDOS DE RESERVA (PROVISION)</field>
+        <field name="code">FRPROV</field>
+        <field name="allowed_in_news" eval="False"/>
+        <field name="sequence" eval="10" />
+        <field name="appears_on_payslip" eval="True" />
+        <field name="payroll_type_ids" eval="[(4, ref('payslip_type_m'))]"/>
+        <field name="condition_select">python</field>
+        <field name="condition_python">result = utils.check_reserve_funds(contract, payslip) and contract.type_id.social_benefits == True and contract.fondos_reserva_rol == False</field>
+        <field name="register_id" ref="hr_payroll.contrib_register_employees"/>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+inggrav = categories.BASIC + categories.INGGRAV
+fr = employee.company_id.porcentaje_fondos_reserva
+work100 = 30
+if worked_days.WORK100:
+    work100 = worked_days.WORK100.number_of_days
+result = round(utils.reserve_funds(contract, payslip, inggrav, work100, fr, 'default'), 2)
+        </field>
+        <field name="category_id" ref="hr_payroll.COMP"/>
+        <field name="quantity">1.0</field>
+    </record>
+
+    <!-- Cobro de Fondos de Reserva como provision-->
+    <record id="hr_rule_13_salary_expense" model="hr.salary.rule">
+        <field name="name">DECIMO TERCERO (GASTO)</field>
+        <field name="sequence" eval="20"/>
+        <field name="appears_on_payslip" eval="False"/>
+        <field name="allowed_in_news" eval="False"/>
+        <field name="code">13PROVG</field>
+        <field name="analytic" eval="True" />
+        <field name="category_id" ref="COMPG"/>
+        <field name="payroll_type_ids" eval="[(4, ref('payslip_type_m'))]"/>
+        <field name="condition_select">python</field>
+        <field name="condition_python"># El representante legal no recibe 13ro.
+if contract.representante_legal:
+    result = False
+else:
+    result = contract.decimo_tercero_rol == False and contract.type_id.social_benefits == True</field>
+         <field name="amount_select">code</field>
+         <field name="amount_python_compute">
+valor = (categories.BASIC + categories.INGGRAV) / 12
+result = round(valor, 2)
+         </field>
+         <field name="register_id" ref="hr_payroll.contrib_register_employees"/>
+    </record>
+
+    <record id="hr_rule_13_salary" model="hr.salary.rule">
+        <field name="name">DECIMO TERCERO (PROVISION)</field>
+        <field name="sequence" eval="20"/>
+        <field name="allowed_in_news" eval="False"/>
+        <field name="appears_on_payslip" eval="True"/>
+        <field name="code">13PROV</field>
+        <field name="category_id" ref="hr_payroll.COMP"/>
+        <field name="payroll_type_ids" eval="[(4, ref('payslip_type_m'))]"/>
+        <field name="condition_select">python</field>
+        <field name="condition_python"># El representante legal no recibe 13ro.
+if contract.representante_legal:
+    result = False
+else:
+    result = contract.decimo_tercero_rol == False and contract.type_id.social_benefits == True</field>
+         <field name="amount_select">code</field>
+         <field name="amount_python_compute">
+valor = (categories.BASIC + categories.INGGRAV) / 12
+result = round(valor, 2)
+         </field>
+         <field name="register_id" ref="hr_payroll.contrib_register_employees"/>
+    </record>
+
+    <record id="hr_rule_14_salary_expense" model="hr.salary.rule">
+        <field name="name">DECIMO CUARTO (GASTO)</field>
+        <field name="sequence" eval="21"/>
+        <field name="appears_on_payslip" eval="False"/>
+        <field name="allowed_in_news" eval="False"/>
+        <field name="code">14PROVG</field>
+        <field name="analytic" eval="True" />
+        <field name="category_id" ref="COMPG"/>
+        <field name="payroll_type_ids" eval="[(4, ref('payslip_type_m'))]"/>
+        <field name="condition_select">python</field>
+        <field name="condition_python"># El representante legal no recibe 14to.
+if contract.representante_legal:
+    result = False
+else:
+    result = contract.decimo_cuarto_rol == False and contract.type_id.social_benefits == True</field>
+         <field name="amount_select">code</field>
+         <field name="amount_python_compute">
+dias = 30
+unpaid = 0
+
+for line in payslip.worked_days_line_ids:
+    if line.code in ('UNPAID', 'OUT'):
+        unpaid += line.number_of_days
+
+basic_wage = employee.company_id.basic_wage
+if contract.type_id.halftime:
+    basic_wage = employee.company_id.basic_wage /2.0
+valor = (basic_wage/30)*(dias - unpaid) / 12
+result = round(valor, 2)
+         </field>
+         <field name="register_id" ref="hr_payroll.contrib_register_employees"/>
+    </record>
+
+    <record id="hr_rule_14_salary" model="hr.salary.rule">
+        <field name="name">DECIMO CUARTO (PROVISION)</field>
+        <field name="sequence" eval="21"/>
+        <field name="appears_on_payslip" eval="True"/>
+        <field name="allowed_in_news" eval="False"/>
+        <field name="code">14PROV</field>
+        <field name="category_id" ref="hr_payroll.COMP"/>
+        <field name="payroll_type_ids" eval="[(4, ref('payslip_type_m'))]"/>
+        <field name="condition_select">python</field>
+        <field name="condition_python"># El representante legal no recibe 14to.
+if contract.representante_legal:
+    result = False
+else:
+    result = contract.decimo_cuarto_rol == False and contract.type_id.social_benefits == True</field>
+         <field name="amount_select">code</field>
+         <field name="amount_python_compute">
+dias = 30
+unpaid = 0
+
+for line in payslip.worked_days_line_ids:
+    if line.code in ('UNPAID', 'OUT'):
+        unpaid += line.number_of_days
+
+basic_wage = employee.company_id.basic_wage
+if contract.type_id.halftime:
+    basic_wage = employee.company_id.basic_wage /2.0
+valor = (basic_wage/30)*(dias - unpaid) / 12
+result = round(valor, 2)
+         </field>
+         <field name="register_id" ref="hr_payroll.contrib_register_employees"/>
+    </record>
+
+    <record id="hr_rule_vacaciones_expense" model="hr.salary.rule">
+        <field name="name">VACACIONES (GASTO)</field>
+        <field name="sequence" eval="21"/>
+        <field name="appears_on_payslip" eval="False"/>
+        <field name="allowed_in_news" eval="False"/>
+        <field name="code">VACG</field>
+        <field name="analytic" eval="True" />
+        <field name="category_id" ref="COMPG"/>
+        <field name="payroll_type_ids" eval="[(4, ref('payslip_type_m'))]"/>
+        <field name="condition_select">python</field>
+        <field name="condition_python">result = contract.type_id.social_benefits == True</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+valor = (categories.BASIC + categories.ALW + categories.INGGRAV) / 24
+result = round(valor, 2)
+        </field>
+        <field name="register_id" ref="hr_payroll.contrib_register_employees"/>
+    </record>
+
+    <record id="hr_rule_vacaciones" model="hr.salary.rule">
+        <field name="name">VACACIONES (PROVISION)</field>
+        <field name="sequence" eval="21"/>
+        <field name="appears_on_payslip" eval="True"/>
+        <field name="allowed_in_news" eval="False"/>
+        <field name="code">VAC</field>
+        <field name="category_id" ref="hr_payroll.COMP"/>
+        <field name="payroll_type_ids" eval="[(4, ref('payslip_type_m'))]"/>
+        <field name="condition_select">python</field>
+        <field name="condition_python">result = contract.type_id.social_benefits == True</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+valor = (categories.BASIC + categories.ALW + categories.INGGRAV) / 24
+result = round(valor, 2)
+        </field>
+        <field name="register_id" ref="hr_payroll.contrib_register_employees"/>
+    </record>
+
+
+    <!-- Iess patronal -->
+    <record id="hr_rule_company_iess_expense" model="hr.salary.rule">
+        <field name="name">IESS APORTE PATRONAL (GASTO)</field>
+        <field name="sequence" eval="100"/>
+        <field name="appears_on_payslip" eval="False"/>
+        <field name="allowed_in_news" eval="False"/>
+        <field name="code">IESSPATROG</field>
+        <field name="analytic" eval="True" />
+        <field name="category_id" ref="COMPG"/>
+        <field name="payroll_type_ids" eval="[(4, ref('payslip_type_m'))]"/>
+        <field name="condition_select">python</field>
+        <field name="condition_python"># No se aplica con el porcentaje especial del representante legal.
+if contract.iess_representante_legal:
+    result = False
+else:
+    result = True</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+valor = (categories.BASIC + categories. INGGRAV + categories.ALW) * (employee.company_id.iess_empleador / 100)
+result = round(valor, 2)
+        </field>
+        <field name="register_id" ref="hr_payroll.contrib_register_employees"/>
+    </record>
+
+    <record id="hr_rule_company_iess" model="hr.salary.rule">
+        <field name="name">IESS APORTE PATRONAL (PROVISION)</field>
+        <field name="sequence" eval="100"/>
+        <field name="appears_on_payslip" eval="True"/>
+        <field name="allowed_in_news" eval="False"/>
+        <field name="code">IESSPATRO</field>
+        <field name="category_id" ref="hr_payroll.COMP"/>
+        <field name="payroll_type_ids" eval="[(4, ref('payslip_type_m'))]"/>
+        <field name="condition_select">python</field>
+        <field name="condition_python"># No se aplica con el porcentaje especial del representante legal.
+if contract.iess_representante_legal:
+    result = False
+else:
+    result = True</field>
+        <field name="amount_select">code</field>
+        <field name="amount_python_compute">
+valor = (categories.BASIC + categories. INGGRAV + categories.ALW) * (employee.company_id.iess_empleador / 100)
+result = round(valor, 2)
+        </field>
+        <field name="register_id" ref="hr_payroll.contrib_register_employees"/>
+    </record>
+
+</odoo>

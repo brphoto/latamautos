@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="l10n_ec_view_department_form" model="ir.ui.view">
+            <field name="name">hr.department.form</field>
+            <field name="model">hr.department</field>
+            <field name="inherit_id" ref="hr.view_department_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//group" position="after">
+                    <notebook groups="account.group_account_user,account.group_account_manager">
+                        <page string="Salary Rules" >
+                            <group>
+                                <button name="call_wizard" type="object" string="Map HR Salary Rules" class="oe_highlight oe_edit_only"/>
+                            </group>
+                            <field name="salaryrule_map_ids" nolabel="1" context="{'default_department_id': id}" readonly="1">
+                                <tree string="Salary Rules" editable="bottom">
+                                    <field name="department_id" invisible="1" />
+                                    <field name="salary_rule_id" />
+                                    <field name="account_debit" />
+                                    <field name="account_credit" />
+                                    <field name="analytic_account_id" />
+                                    <field name="account_tax_id" />
+                                    <field name="partner_id" />
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_department_filter" model="ir.ui.view">
+            <field name="name">Departments</field>
+            <field name="model">hr.department</field>
+            <field name="inherit_id" ref="hr.view_department_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//filter[@name='message_needaction']" position="before">
+                    <group expand="0" string="Group By">
+                        <filter string="Parent" name="parent_id" context="{'group_by':'parent_id'}"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="hr.open_module_tree_department" model="ir.actions.act_window" >
+            <field name="context">{'search_default_parent_id':1}</field>
+        </record>
+
+
+    </data>
+</odoo>

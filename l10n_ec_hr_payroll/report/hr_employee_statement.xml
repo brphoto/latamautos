@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="employee_statement_a4_portrait" model="report.paperformat">
+        <field name="name">Letter Portrait For Payslip</field>
+        <field name="default" eval="False"/>
+        <field name="format">A4</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">5</field>
+        <field name="margin_bottom">5</field>
+        <field name="margin_left">5</field>
+        <field name="margin_right">5</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing" eval="False" />
+        <field name="dpi">96</field>
+    </record>
+
+    <report id="action_report_hr_employee_staement"
+            model="hr.employee.statement"
+            string="Employee Statement"
+            report_type="qweb-pdf"
+            paperformat="employee_statement_a4_portrait"
+            name="l10n_ec_hr_payroll.hr_employee_statement"
+            file="Employee Statement" />
+
+    <template id="hr_employee_statement">
+        <t t-call="web.html_container">
+         <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <div class="page">
+                    <t t-foreach="o.get_statement()" t-as="st" >
+                        <p style="page-break-before:always;">
+                        <table style="width:100%;" >
+                            <thead style="border-bottom: 1px solid black">
+                                <th style="text-align: right" colspan="4">
+                                    <h2>
+                                        Employee Account Statement <t t-if="o.date_from"> From: <t t-esc="o.date_from" />
+                                    </t>
+                                    <t t-if="o.date_to"> To: <t t-esc="o.date_to" />
+                                    </t>
+                                    </h2>
+                                </th>
+                            </thead>
+                        </table>
+                        <h3>
+                            <t t-esc="st.get('code', False)" /> - <t t-esc="st.get('name', False)" />
+                        </h3>
+                        <t t-if="st.get('news', False)">
+                            <table style="width:100%; font-size: 80%" class="table-condensed">
+                                <thead style="border-bottom: 1px solid black">
+                                    <tr>
+                                        <td colspan="5">
+                                            <h4>News</h4>
+                                        </td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th style="border: 1px solid black; text-align: center; width:35%">
+                                            DESCRIPTION
+                                        </th>
+                                        <th style="border: 1px solid black; text-align: center; width:35%">
+                                            SALARY RULE
+                                        </th>
+                                        <th style="border: 1px solid black; text-align: center; width:10%">
+                                            DATE
+                                        </th>
+                                        <th style="border: 1px solid black; text-align: center; width:10%">
+                                            AMOUNT
+                                        </th>
+                                        <th style="border: 1px solid black; text-align: center; width:10%">
+                                            STATE
+                                        </th>
+                                    </tr>
+                                    <tr t-foreach="st.get('news', False)" t-as="new" style="border-bottom: 1px solid black; border-left: 1px solid black; border-right: 1px solid black">
+                                        <td style="border: 1px solid black; padding-left: 0.5em; padding-right: 0.5em;">
+                                            <t t-esc="new.get('name', False)" />
+                                        </td>
+                                        <td style="border: 1px solid black; padding-left: 0.5em; padding-right: 0.5em;">
+                                            <t t-esc="new.get('rule', False)" />
+                                        </td>
+                                        <td style="border: 1px solid black; padding-left: 0.5em; padding-right: 0.5em; text-align: center;">
+                                            <t t-esc="new.get('date', False)" />
+                                        </td>
+                                        <td style="border: 1px solid black; padding-left: 0.5em; padding-right: 0.5em; text-align: right;">
+                                            <t t-esc="new.get('amount', False)" />
+                                        </td>
+                                        <td style="border: 1px solid black; padding-left: 0.5em; padding-right: 0.5em; text-align: center;">
+                                            <t t-esc="new.get('state', False)" />
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <br />
+                        </t>
+                        <t t-if="st.get('loans', False)">
+                            <table style="width:100%; font-size: 80%" class="table-condensed">
+                                <thead>
+                                    <tr>
+                                        <td colspan="5">
+                                            <h4>Loans</h4>
+                                        </td>
+                                    </tr>
+                                </thead>
+                            </table>
+                            <t t-foreach="st.get('loans', False)" t-as="loan">
+                                <table style="width:100%; font-size: 80%" class="table-condensed">
+                                    <thead>
+                                        <tr>
+                                            <td style="border: 1px solid black;">
+                                                <strong>DESCRIPTION</strong>
+                                            </td>
+                                            <td style="border: 1px solid black;">
+                                                <t t-esc="loan.get('name', False)" />
+                                            </td>
+                                            <td style="border: 1px solid black;">
+                                                <strong>NUMBER</strong>
+                                            </td>
+                                            <td style="border: 1px solid black;">
+                                                <t t-esc="loan.get('number', False)" />
+                                            </td>
+                                            <td style="border: 1px solid black;">
+                                                <strong>STATE</strong>
+                                            </td>
+                                            <td style="border: 1px solid black;">
+                                                <t t-esc="loan.get('state', False)" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="border: 1px solid black;">
+                                                <strong>APPLICATION DATE</strong>
+                                            </td>
+                                            <td style="border: 1px solid black;">
+                                                <t t-esc="loan.get('application_date', False)" />
+                                            </td>
+                                            <td style="border: 1px solid black;">
+                                                <strong>APPROVED DATE</strong>
+                                            </td>
+                                            <td style="border: 1px solid black;">
+                                                <t t-esc="loan.get('approved_date', False)" />
+                                            </td>
+                                            <td style="border: 1px solid black;">
+                                                <strong>PAY FROM</strong>
+                                            </td>
+                                            <td style="border: 1px solid black;">
+                                                <t t-esc="loan.get('pay_from', False)" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="border: 1px solid black;">
+                                                <strong>AMOUNT</strong>
+                                            </td>
+                                            <td style="border: 1px solid black;">
+                                                <t t-esc="loan.get('amount')" />
+                                            </td>
+                                            <td style="border: 1px solid black;">
+                                                <strong>PENDING AMOUNT</strong>
+                                            </td>
+                                            <td style="border: 1px solid black;">
+                                                <t t-esc="loan.get('pending_amount')" />
+                                            </td>
+                                            <td style="border: 1px solid black;">
+                                                <strong>DUES</strong>
+                                            </td>
+                                            <td style="border: 1px solid black;">
+                                                <t t-esc="loan.get('dues')" />
+                                            </td>
+                                        </tr>
+                                    </thead>
+                                </table>
+                                <t t-if="loan.get('lines', False)">
+                                    <table style="width:100%; font-size: 90%" class="table-condensed">
+                                        <thead>
+                                            <tr>
+                                                <td colspan="4">
+                                                    <h5>Amortization Table</h5>
+                                                </td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <th style="border: 1px solid black; text-align:center;">DUE NUMBER</th>
+                                                <th style="border: 1px solid black; text-align:center;">DATE</th>
+                                                <th style="border: 1px solid black; text-align:center;">AMOUNT</th>
+                                                <th style="border: 1px solid black; text-align:center;">STATE</th>
+                                            </tr>
+                                            <tr t-foreach="loan.get('lines', False)" t-as="line">
+                                                <td style="border: 1px solid black; text-align:center;">
+                                                    <t t-esc="line.get('quantity',False)" />
+                                                </td>
+                                                <td style="border: 1px solid black; text-align:center;">
+                                                    <t t-esc="line.get('date',False)" />
+                                                </td>
+                                                <td style="border: 1px solid black; text-align:right;">
+                                                    <t t-esc="line.get('amount',False)" />
+                                                </td>
+                                                <td style="border: 1px solid black; text-align:center;">
+                                                    <t t-esc="line.get('state',False)" />
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </t>
+                                <br />
+                            </t>
+                        </t>
+                        
+                        <t t-if="st.get('cargas', False)">
+                            <table style="width:100%; font-size: 80%" class="table-condensed">
+                                <thead style="border-bottom: 1px solid black">
+                                    <tr>
+                                        <td colspan="5">
+                                            <h4>Cargas Familiares</h4>
+                                        </td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                    	<th style="border: 1px solid black; text-align: center; width:35%">
+                                            CÉDULA
+                                        </th>
+                                        <th style="border: 1px solid black; text-align: center; width:35%">
+                                            DEPARTAMENTO
+                                        </th>
+                                        <th style="border: 1px solid black; text-align: center; width:35%">
+                                            N° CARGAS FAMILIARES
+                                        </th>         
+                                           
+                                                            
+                                    </tr>
+                                    <tr t-foreach="st.get('cargas', False)" t-as="cargas" style="border-bottom: 1px solid black; border-left: 1px solid black; border-right: 1px solid black">
+                                        <td style="border: 1px solid black; padding-left: 0.5em; padding-right: 0.5em;">
+                                            <t t-esc="st.get('vat', False)" />
+                                        </td>
+                                        <td style="border: 1px solid black; padding-left: 0.5em; padding-right: 0.5em;">
+                                            <t t-esc="st.get('department', False)" />
+                                        </td>
+                                        <td style="border: 1px solid black; padding-left: 0.5em; padding-right: 0.5em;">
+                                            <t t-esc="cargas.get('cargas', False)" />
+                                      </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <br />
+                        </t>
+                        
+                    </p>
+                    </t>
+                </div>
+            </t>
+        </t>
+        </t>
+    </template>
+
+</odoo>

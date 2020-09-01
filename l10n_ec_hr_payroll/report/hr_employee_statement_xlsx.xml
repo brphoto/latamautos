@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--<report id="hr_employee_statement_xlsx"
+            model="hr.employee.statement"
+            string="Hr Employee Statement XLSX"
+            report_type="xlsx"
+            name="hr_employee_statement_xlsx.xlsx"
+            file="hr_employee_statement_xlsx.xlsx"
+            attachment_use="False" />-->
+
+</odoo>

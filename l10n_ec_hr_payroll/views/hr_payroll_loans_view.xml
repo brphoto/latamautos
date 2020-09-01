@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="l10n_ec_hr_payroll_loans_filter" model="ir.ui.view">
+            <field name="name">l10n.ec.hr.payroll.loans.filter</field>
+            <field name="model">hr.payslip.loans</field>
+            <field name="arch" type="xml">
+                <search string="News">
+                    <field name="employee_id" context="{'show_unemployed': True}" />
+                    <field name="name" />
+                    <filter string="Draft" name="loan_draft" domain="[('state', '=', 'draft')]" />
+                    <filter string="Approved" name="loan_approved" domain="[('state', '=', 'approved')]" />
+                    <filter string="Paid" name="loan_paid" domain="[('state', '=', 'paid')]" />
+                    <group expand="0" string="Group By">
+                        <filter name="employee_id" string="Employee" domain="[]" context="{'group_by':'employee_id'}"/>
+                        <filter name="state" string="State" domain="[]" context="{'group_by':'state'}"/>
+                        <filter name="rule_id" string="Salary Rule" domain="[]" context="{'group_by':'rule_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="view_l10n_ec_hr_payslip_loans_form" model="ir.ui.view">
+			<field name="name">l10n.ec.hr.payslip.loans.form</field>
+			<field name="model">hr.payslip.loans</field>
+			<field name="arch" type="xml">
+				<form string="Employee Loans">
+                    <header>
+                        <button name="approve_loan" states="draft" string="Approved" class="oe_highlight" type="object"/>
+                        <button string="Pay" name="pay_loan" type="object" states="approved" />
+					    <field name="state" widget="statusbar" />
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="name" class="oe_edit_only"/>
+                            <h1>
+                                <field name="name" class="oe_inline" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="payroll_type" string="Discount type" widget="selection" required="1" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                                <field name="number" required="1" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                                <field name="employee_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                                <field name="amount" attrs="{'readonly': [('state', '!=', 'draft')]}" required="1"/>
+                                <field name="dues" attrs="{'readonly': [('state', '!=', 'draft')]}" required="1"/>
+                                <field name="paid" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            </group>
+                            <group>
+                                <field name="application_date" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                                <field name="approved_date" attrs="{'invisible': [('state', '=', 'draft')]}"/>
+                                <label for="month" string="Pay from" class="oe_edit_only" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+                                <div class="oe_edit_only" attrs="{'invisible': [('state', '!=', 'draft')]}">
+                                    <field name="month" nolabel="1" />
+                                    <field name="year" nolabel="1" required="1" />
+                                </div>
+                                <field name="pay_from" class="oe_read_only" />
+                                <field name="rule_id" required="1" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                                <field name="reconciled" attrs="{'readonly': [('state', '!=', 'draft')]}" invisible="1"/>
+                                <field name="payment_id" readonly="1" attrs="{'invisible': [('payment_id', '=', False)]}"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Dues" attrs="{'invisible': [('state', '=', 'draft')]}">
+                                <field name="line_ids" nolabel="1" >
+                                    <tree string="Paid Lines" create="0" colspan="4" decoration-info="state == 'draft'" decoration-muted="state == 'done'">
+                                        <field name="quantity" />
+                                        <field name="employee_id" invisible="1"/>
+                                        <field name="rule_id" invisible="1"/>
+                                        <field name="date" readonly="1"/>
+                                        <field name="amount" />
+                                        <field name="state" readonly="1"/>
+                                    </tree>
+                                    <form string="Paid Lines" >
+                                        <field name="employee_id"/>
+                                        <field name="rule_id"/>
+                                        <field name="date" readonly="1"/>
+                                        <field name="quantity" />
+                                        <field name="amount" />
+                                        <field name="state" />
+                                    </form>
+					            </field>
+                                <group class="oe_subtotal_footer oe_right"  colspan="2" name="loan_total">
+                                    <h1>
+                                        <label for="pending_amount" />
+                                    </h1>
+                                    <h1>
+                                        <field name="pending_amount" widget="monetary"/>
+                                    </h1>
+                                </group>
+                            </page>
+                        </notebook>
+                        <div class="oe_clear"/>
+                        <field name="note" class="oe_inline" placeholder="Notes" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                    </sheet>
+				</form>
+			</field>
+		</record>
+
+        <record id="view_l10n_ec_hr_payslip_loans_tree" model="ir.ui.view">
+			<field name="name">l10n.ec.hr.payslip.loans.tree</field>
+			<field name="model">hr.payslip.loans</field>
+			<field name="arch" type="xml">
+				<tree string="Employees Loans" decoration-info="state == 'draft'" decoration-success="state == 'paid'" decoration-muted="state == 'cancel'">
+                    <field name="name" />
+                    <field name="number" />
+					<field name="employee_id" />
+					<field name="year" />
+					<field name="month" />
+                    <field name="amount" />
+					<field name="state" />
+				</tree>
+			</field>
+		</record>
+
+		<record id="action_l10n_ec_hr_payslip_loans" model="ir.actions.act_window">
+			<field name="name">Employees Loans</field>
+			<field name="res_model">hr.payslip.loans</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+            <field name="context">{'search_default_loan_approved': 1}</field>
+		</record>
+
+		<menuitem id="menu_l10n_ec_hr_payslip_loans"
+                  action="action_l10n_ec_hr_payslip_loans"
+			      parent="root_hr_payroll_news"
+                  name="Advances/Loans"
+                  groups="hr.group_hr_manager" />
+
+    </data>
+</odoo>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="payslip_type_13" model="hr.payslip.type">
+        <field name="name">Décimo tercero</field>
+        <field name="day_from">01</field>
+        <field name="day_to">30</field>
+        <field name="overtime" eval="False"/>
+        <field name="invoices" eval="False"/>
+    </record>
+
+    <record id="payslip_type_14" model="hr.payslip.type">
+        <field name="name">Décimo cuarto</field>
+        <field name="day_from">01</field>
+        <field name="day_to">30</field>
+        <field name="overtime" eval="False"/>
+        <field name="invoices" eval="False"/>
+    </record>
+
+    <record id="payslip_type_q" model="hr.payslip.type">
+        <field name="name">Quincenal</field>
+        <field name="day_from">01</field>
+        <field name="day_to">15</field>
+        <field name="overtime" eval="False"/>
+        <field name="invoices" eval="False"/>
+    </record>
+
+    <record id="payslip_type_m" model="hr.payslip.type">
+        <field name="name">Mensual</field>
+        <field name="day_from">01</field>
+        <field name="day_to">30</field>
+        <field name="overtime" eval="True"/>
+        <field name="invoices" eval="True"/>
+    </record>
+
+    <record id="payslip_type_liq" model="hr.payslip.type">
+        <field name="name">Liquidación de haberes</field>
+        <field name="day_from">01</field>
+        <field name="day_to">30</field>
+        <field name="overtime" eval="False"/>
+        <field name="invoices" eval="False"/>
+    </record>
+
+    <record id="payslip_type_utilidades" model="hr.payslip.type">
+        <field name="name">Pago de utilidades</field>
+        <field name="day_from">01</field>
+        <field name="day_to">30</field>
+        <field name="overtime" eval="False"/>
+        <field name="invoices" eval="False"/>
+    </record>
+
+    <record id="payslip_type_salario_digno" model="hr.payslip.type">
+        <field name="name">Salario Digno</field>
+        <field name="day_from">01</field>
+        <field name="day_to">30</field>
+        <field name="overtime" eval="False"/>
+        <field name="invoices" eval="False"/>
+    </record>
+
+</odoo>

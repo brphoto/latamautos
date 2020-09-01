@@ -1,0 +1,7 @@
+"id","active","double_validation","color_name","name","code","allocation_type"
+"hr_leave_type.leave_type_vac","True","False","Blue","VACACIONES LEGALES","WORK100","no"
+"hr_leave_type.leave_type_cl","True","False","Black","AUSENCIAS REMUNERADAS 100%","WORK100","no"
+"hr_leave_type.leave_type_sl","True","False","Red","AUSENCIAS SUBSIDIADAS 75%","DED75","no"
+"hr_leave_type.leave_type_comp","True","False","Red","AUSENCIAS SUBSIDIADAS 66%","DED66","no"
+"hr_leave_type.leave_type_ded50","True","False","Red","AUSENCIAS SUBSIDIADAS 50%","DED50","no"
+"hr_leave_type.leave_type_unpaid","True","False","Red","AUSENCIAS NO REMUNERADAS","UNPAID","no"

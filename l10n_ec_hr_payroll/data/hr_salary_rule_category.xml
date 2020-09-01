@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <function name="write" model="ir.model.data">
+        <function name="search" model="ir.model.data">
+            <value eval="[('module', '=', 'hr_payroll'), ('name', 'in', ('BASIC','ALW','GROSS','DED','NET','COMP','gross'))]"/>
+        </function>
+        <value eval="{'noupdate': False}" />
+    </function>
+
+    <record id="hr_payroll.BASIC" model="hr.salary.rule.category">
+        <field name="name">BASE</field>
+    </record>
+
+    <record id="hr_payroll.ALW" model="hr.salary.rule.category">
+        <field name="name">INGRESOS</field>
+    </record>
+
+    <record id="hr_payroll.GROSS" model="hr.salary.rule.category">
+        <field name="name">BRUTO</field>
+    </record>
+
+    <record id="hr_payroll.DED" model="hr.salary.rule.category">
+        <field name="name">DEDUCCIÓN</field>
+    </record>
+
+    <record id="hr_payroll.NET" model="hr.salary.rule.category">
+        <field name="name">NETO</field>
+    </record>
+
+    <record id="hr_payroll.COMP" model="hr.salary.rule.category">
+        <field name="name">PROVISIÓN</field>
+    </record>
+
+    <record id="hr_salary_rule__category_inggrav" model="hr.salary.rule.category">
+        <field name="name">INGRESOS IMPUTABLES</field>
+        <field name="code">INGGRAV</field>
+    </record>
+
+    <record id="INGNOGRAV" model="hr.salary.rule.category">
+        <field name="name">INGRESOS NO GRABADOS</field>
+        <field name="code">INGNOGRAV</field>
+    </record>
+
+    <record id="INGRESONOGRAVADO" model="hr.salary.rule.category">
+        <field name="name">DEPRECIADO por Ingresos no gravados</field>
+        <field name="code">INGRESONOGRAVADO</field>
+    </record>
+
+    <record id="LIQING" model="hr.salary.rule.category">
+        <field name="name">INGRESOS DE LA LIQUIDACIÓN DE HABERES</field>
+        <field name="code">LIQING</field>
+    </record>
+
+    <record id="LIQDED" model="hr.salary.rule.category">
+        <field name="name">DEDUCCIONES DE LA LIQUIDACIÓN DE HABERES</field>
+        <field name="code">LIQDED</field>
+    </record>
+
+    <record id="SUBIESS" model="hr.salary.rule.category">
+        <field name="name">SUBSIDIOS PAGADOS POR EL IESS</field>
+        <field name="code">SUBIESS</field>
+    </record>
+
+    <record id="LOAN" model="hr.salary.rule.category">
+        <field name="name">PRESTAMOS</field>
+        <field name="code">LOAN</field>
+    </record>
+
+    <record id="COMPG" model="hr.salary.rule.category">
+        <field name="name">PROVISIÓN GASTO</field>
+        <field name="code">COMPG</field>
+    </record>
+
+</odoo>

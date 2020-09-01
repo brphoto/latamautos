@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="l10n_ec_hr_view_res_bank_form" model="ir.ui.view">
+        <field name="name">l10n.ec.hr.view.res.bank.form</field>
+        <field name="model">res.bank</field>
+        <field name="inherit_id" ref="base.view_res_bank_form" />
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='bic']" position="after">
+                <field name="journal_id" groups="account.group_account_manager,account.group_account_user" />
+                <field name="check_journal_id" groups="account.group_account_manager,account.group_account_user" />
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
