@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_l10n_ec_hr_payslip_by_employees" model="ir.ui.view">
+        <field name="name">hr_payroll_payslip_employees</field>
+        <field name="model">hr.payslip.employees</field>
+        <field name="inherit_id" ref="hr_payroll.view_hr_payslip_by_employees"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='employee_ids']" position="attributes">
+                <attribute name="context">{'show_unemployed': True}</attribute>
+            </xpath>
+            <xpath expr="/form/group/span" position="after">
+           	 	<group name="load_type">	                             
+	                <field name="load_type" />
+                </group>
+            </xpath>
+            <xpath expr="/form/group[1]" position="after">
+                <group attrs="{'invisible': [('load_type', '=', 'manual')]}">
+                    <field name="employees_file" attrs="{'required': [('load_type', '=', 'file')]}" />
+                    <field name="delimeter" attrs="{'required': [('load_type', '=', 'file')]}" />
+                </group>
+            </xpath>
+            <xpath expr="/form/group[3]" position="attributes">
+                <attribute name="attrs">{'invisible': [('load_type', '=', 'file')]}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='employee_ids']" position="after">
+                <field name="run_id" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

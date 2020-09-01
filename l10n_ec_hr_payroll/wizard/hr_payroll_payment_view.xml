@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="wizard_hr_payroll_payment_form" model="ir.ui.view">
+            <field name="name">wizard.hr.payroll.payment.form</field>
+            <field name="model">wizard.hr.payslip.payment</field>
+            <field name="arch" type="xml">
+                <form string="Generate Payments">
+                    <group>
+                        <group>
+                            <field name="payslip_run_id" invisible="1" />
+                            <field name="date" />
+                        </group>
+                        <group>
+                            <field
+                                name="journal_id"
+                                options='{"no_create_edit": True, "no_open": True, "no_quick_create": True}'
+                                />
+                            <field
+                                name="payment_method_id"
+                                options='{"no_create_edit": True, "no_open": True, "no_quick_create": True}'
+                                />
+                            <button
+                                name="button_create_lines"
+                                string="Create lines"
+                                type="object"
+                                />
+                        </group>
+                    </group>
+                            
+                    <group string="Payments to process">
+                        <field
+                            name="line_ids" nolabel="1"
+                            context="{'default_wizard_id': active_id}"
+                            >
+
+                            <tree editable="top">
+                                <field
+                                    name="payslip_id"
+                                    options='{"no_create_edit": True, "no_open": True, "no_quick_create": True}'
+                                    />
+                                <field
+                                    name="journal_id"
+                                    options='{"no_create_edit": True, "no_open": True, "no_quick_create": True}'
+                                    />
+                                <field
+                                    name="payment_method_id"
+                                    options='{"no_create_edit": True, "no_open": True, "no_quick_create": True}'
+                                    />
+                                <field name="amount"/>
+                            </tree>
+                        </field>
+                    </group>
+                        
+                    <footer>
+                        <button
+                            name="button_generate_payments"
+                            string="Generate Payment"
+                            type="object"
+                            class="btn-primary"
+                            />
+                        <!-- <label string=" or "/> -->
+                        <button string="Cancel" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="wizard_hr_payroll_payment_action" model="ir.actions.act_window">
+            <field name="name">Generate Payments</field>
+            <field name="res_model">wizard.hr.payslip.payment</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+    </data>
+</odoo>

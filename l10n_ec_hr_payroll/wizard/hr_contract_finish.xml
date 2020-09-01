@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_hr_contract_finish_reason" model="ir.ui.view">
+        <field name="name">hr.contract.finish</field>
+        <field name="model">hr.contract.finish</field>
+        <field name="arch" type="xml">
+            <form string="Contract Close">
+                <group>
+                    <field name="contract_id" invisible="1"/>
+                    <field name="reason_id" required="1" widget="selection"/>
+                    <field name="employee" eval="True"/>
+                    <field name="date" required="1"/>
+                </group>
+                <footer>
+                    <button name="close" string="Close Contract"
+                            type="object" class="btn-primary"/>
+                    or
+                    <button string="Cancel" class="btn-default" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

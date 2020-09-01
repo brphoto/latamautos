@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="wizard_hr_payroll_spi_form" model="ir.ui.view">
+            <field name="name">wizard.hr.payroll.spi.form</field>
+            <field name="model">wizard.hr.payslip.spi</field>
+            <field name="arch" type="xml">
+                <form string="Generate Cash Management">
+                    This assistant allows to generate the file Cash Management of the bank Produbanco"<br />
+                    used to pay Payroll, month to month<br /><br />
+                    Please select the corresponding bank account:<br />
+                    Please download the generated file:<br />
+                    <field name="state" invisible="1" />
+                    <group>
+                        <field name="slip_id" invisible="1" />
+                        <field name="partner_id" invisible="1" />
+                        <field name="payment_date" />
+                        <field
+                            name="bank_account_id"
+                            required="1"
+                            states="draft"
+                            widget="selection"
+                            domain="[('partner_id', '=', partner_id)]"
+                            />
+                        <field
+                            name="payment_method_id"
+                            widget="radio"
+                            required="1"
+                            attrs="{'invisible': [('bank_account_id', '=', False), ('state', '=', 'draft')]}"
+                            />
+                        <field
+                            name="payment_method_check_id"
+                            widget="radio"
+                            required="1"
+                            attrs="{'invisible': [('bank_account_id', '=', False), ('state', '=', 'draft')]}"
+                            />
+                        <field
+                            name="name"
+                            readonly="1"
+                            invisible="1"
+                            />
+                        <field
+                            name="file_export"
+                            string="Cash Management File"
+                            states="execute"
+                            filename="name"
+                            />
+                    </group>
+                    <footer>
+                        <button
+                            name="get_spi"
+                            states="draft"
+                            string="Generate Cash Management"
+                            type="object"
+                            class="btn-primary"
+                            />
+                       <!--  <label string=" or " states="draft"/> -->
+                        <button string="Cancel" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="wizard_hr_payroll_spi_action" model="ir.actions.act_window">
+            <field name="name">Generate Cash Management</field>
+            <field name="res_model">wizard.hr.payslip.spi</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+    </data>
+</odoo>

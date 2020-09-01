@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <data>
+
+        <record id="wizard_hr_payslip_news_form" model="ir.ui.view">
+            <field name="name">wizard.hr.payslip.news.form</field>
+            <field name="model">wizard.hr.payslip.news</field>
+            <field name="arch" type="xml">
+                <form string="Generate/Import News">
+                    <div>
+                        <span><strong>Please select one of the options.</strong></span>
+                        <ul>
+                            <li> The <strong>Export Template</strong> option will generate an xlsx file to load news, it is based on the selected employees and the salary rules. </li>
+                            <li> The <strong>Import Template</strong> option will allow you to load a pre-exported xslx file to record updates that affect the payment role in the system </li>
+                            <li> The <strong>Generate</strong> option will allow you select a rule and apply a fixed amount or a percent of the net or gross salary to all selected employees.</li>
+                        </ul>
+                    </div>
+                    <group>
+                        <field name="option" />
+                        <field name="state" invisible="1"/>
+                    </group>
+                    <notebook>
+                        <page string="Import/Export" attrs="{'invisible': [('option', '=', 'generate')]}">
+                            <group attrs="{'invisible': ['|', ('state', '=', 'exported'),('option', '=', 'import')]}">
+                                <group colspan="4" >
+                                    <label for="line_ids" />
+                                    <group>
+                                        <field name="line_ids" nolabel="1" >
+                                            <tree string="Reason" editable="bottom">
+                                                <field name="name" />
+                                                <field
+                                                    name="rule_id"
+                                                    options='{"no_create_edit": True, "no_quick_create": True, "no_open": True}'
+                                                    />
+                                            </tree>
+                                        </field>
+                                    </group>
+                                    <label for="employee_ids" />
+                                    <group>
+                                        <field name="employee_ids" nolabel="1" >
+                                            <tree string="Employees">
+                                                <field
+                                                    name="identification_id"
+                                                    options='{"no_create_edit": True, "no_quick_create": True, "no_open": True}'
+                                                    />
+                                                <field
+                                                    name="passport_id"
+                                                    options='{"no_create_edit": True, "no_quick_create": True, "no_open": True}'
+                                                    />
+                                                <field name="name" />
+                                                <field
+                                                    name="department_id"
+                                                    options='{"no_create_edit": True, "no_quick_create": True, "no_open": True}'
+                                                    />
+                                                <field
+                                                    name="job_id"
+
+                                                    options='{"no_create_edit": True, "no_quick_create": True, "no_open": True}'
+                                                    />
+                                            </tree>
+                                        </field>
+                                    </group>
+                                </group>
+                            </group>
+                            <group attrs="{'invisible': ['|',('state', '=', 'draft'),('option', '=', 'import')]}">
+                                <field name="name" invisible="1"/>
+                                <field name="file_template" filename="name" class="oe_link" readonly="1"/>
+                            </group>
+                            <group attrs="{'invisible': [('option', '=', 'export')]}">
+                                <field name="file_upload" />
+                                <field name="date" attrs="{'required': [('option', '=', 'import')]}" />
+                                <field
+                                    name="payroll_type"
+                                    string="Pay in"
+                                    options='{"no_create_edit": True, "no_quick_create": True, "no_open": True}'
+                                    attrs="{'required': [('option', '=', 'import')]}"
+                                    />
+                                <field name="approve_news"/>
+                            </group>
+                        </page>
+                        <page string="Generate" attrs="{'invisible': [('option', '!=', 'generate')]}">
+                            <label for="generate_name" />
+                            <div class="oe_title" >
+                                <field
+                                    name="generate_name"
+                                    attrs="{'required': [('option', '=', 'generate')]}"
+                                    />
+                            </div>
+                            <group>
+                                <group>
+                                    <field
+                                        name="generate_payroll_type"
+                                        string="Pay in"
+                                        options='{"no_create_edit": True, "no_quick_create": True, "no_open": True}'
+                                        attrs="{'required': [('option', '=', 'generate')]}"
+                                        />
+                                    <field
+                                        name="generate_rule_id"
+                                        attrs="{'required': [('option', '=', 'generate')]}"
+                                        options='{"no_create_edit": True, "no_quick_create": True, "no_open": True}'
+                                        />
+                                    <field
+                                        name="generate_date"
+                                        attrs="{'required': [('option', '=', 'generate')]}"
+                                        />
+                                    <field
+                                        name="generate_amount"
+                                        attrs="{
+                                            'invisible': [('generate_type', '!=', 'fixed')],
+                                            'required': [('generate_type', '=', 'fixed')],
+                                            }"
+                                        />
+                                    <field
+                                        name="generate_percent"
+                                        attrs="{
+                                            'invisible': [('generate_type', '=', 'fixed')],
+                                            'required': [('generate_type', '!=', 'fixed')],
+                                            }"
+                                        />
+                                    <field name="generate_approve_news" />
+                                </group>
+                                <group>
+                                    <field name="generate_option" widget="radio"/>
+                                    <field name="generate_type" widget="radio"/>
+                                </group>
+                            </group>
+                            <greup colspan="4">
+                                <group attrs="{'invisible': [('generate_option', '!=', 'employee')]}">
+                                    <field name="generate_employee_ids" />
+                                </group>
+                                <group attrs="{'invisible': [('generate_option', '!=', 'department')]}">
+                                    <field
+                                        name="generate_department_ids"
+                                        options='{"no_create_edit": True, "no_quick_create": True, "no_open": True}'
+                                        />
+                                </group>
+                            </greup>
+                        </page>
+                    </notebook>
+                    <footer>
+                        <button name="generate_news" string="Generate News" type="object" class="btn-primary" attrs="{'invisible': [('option', '!=', 'generate')]}" />
+                        <button name="generate_template" string="Generate Template" type="object" class="btn-primary" attrs="{'invisible': [('option', 'in', ['import', 'generate'])]}" />
+                        <button name="import_template" string="Import Template" type="object" class="btn-primary" attrs="{'invisible': [('option', 'in', ['export', 'generate'])]}" />
+                        or
+                        <button string="Cancel" class="btn-default" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!--<record model="ir.actions.act_window" id="action_wizard_hr_payslip_news">
+            <field name="name">Generate/Import News</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">wizard.hr.payslip.news</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>-->
+
+        <!--menuitem parent="root_hr_payroll_news"
+                  action="action_wizard_hr_payslip_news"
+                  id="menu_wizard_hr_payslip_news"
+                  sequence="1"/>-->
+
+    </data>
+</odoo>

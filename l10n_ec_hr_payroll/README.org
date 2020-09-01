@@ -1,0 +1,125 @@
+[[http://www.gnu.org/licenses/agpl-3.0-standalone.html][https://img.shields.io/badge/licence-AGPL--3-blue.svg]]
+
+* Ecuador's Payroll
+  :PROPERTIES:
+  :CUSTOM_ID: ecuadors-payroll
+  :END:
+
+This module includes the most common salary rules in Ecuador.
+
+** Installation
+   :PROPERTIES:
+   :CUSTOM_ID: installation
+   :END:
+
+To install this module, you need to:
+
+- Add the module to your addons path.
+- Install the module as usual.
+
+** Configuration
+   :PROPERTIES:
+   :CUSTOM_ID: configuration
+   :END:
+
+It's integrated with the Leaves management module, you should create
+leave types according to your needs, and in the code field, you should
+use:
+
+- DED66 for leave types that will be subsided by the IESS in 66%.
+- DED75 for leave types that will be subsided by the IESS in 75%.
+- UNPAID for leave types that will not be paid.
+- Leave empty if the leave will be paid at a 100%.
+
+** Usage
+   :PROPERTIES:
+   :CUSTOM_ID: usage
+   :END:
+
+# TODO
+
+** Demostración en runbot
+   :PROPERTIES:
+   :CUSTOM_ID: demostración-en-runbot
+   :END:
+
+[[https://runbot.odoo-community.org/runbot/repo/github-com-oca-l10n-ecuador-212][https://odoo-community.org/website/image/ir.attachment/5784_f2813bd/datas]]
+
+** Known issues / Roadmap
+   :PROPERTIES:
+   :CUSTOM_ID: known-issues-roadmap
+   :END:
+
+- The code of all WORK100 code should be changed to sum up all WORK100
+  days, in order to have the worked days with it's real value instead of
+  using the fixed 30 as it's now.
+- Done de above, the paid leaves should use WORK100 as a code, instead
+  of empty.
+
+** Bug Tracker
+   :PROPERTIES:
+   :CUSTOM_ID: bug-tracker
+   :END:
+
+Bugs are tracked on [[https://github.com/OCA/l10n-ecuador/issues][GitHub
+Issues]]. In case of trouble, please check there if your issue has
+already been reported. If you spotted it first, help us smashing it by
+providing a detailed and welcomed feedback
+[[https://github.com/OCA/l10n-ecuador/issues/new?body=module:%20l10n_ec_femd%0Aversion:%209.0%0A%0A**Steps%20to%20reproduce**%0A-%20...%0A%0A**Current%20behavior**%0A%0A**Expected%20behavior**][here]].
+
+*** IMPROVEMENTS AND CORRECTIONS [3/17]
+    - [ ] Incrementar una funcionalidad en el sistema que permita generar un cheque a nombre de un empleado directamente desde el módulo de Nomina sin necesidad de tener que registrarlo como un proveedor
+    - [X] Desactivar el botón de eliminar un empleado en el módulo de empleados
+    - [ ] En la ventana de registro de ausencias modificar el sistema para que calcule el tiempo cuando el permiso es en horas, actualmente solo calcula días completos
+    - [ ] En la ventaba de registro de ausencias implementar un formato impreso igual al que actualmente se está manejando para la solicitud de permisos
+    - [ ] En la ventana de registro de contratos implementar un botón que permita registrar el motivo de finalización de un contrato, registre la fecha de salida y pongo el estado del contrato en expirado
+    - [ ] En el módulo de Empleados revisar el reporte de Empleados activos / inactivos, no está funcionando correctamente
+    - [ ] Talento Humano debe entregar las plantillas en Excel de los reportes que necesitan que se incluyan en el sistema
+    - [ ] En el módulo de Proceso de Selección en Puesto de trabajo revisar el campo etapas de la contratación
+    - [ ] En el módulo de Nómina revisar el tema del cálculo del Décimo Cuarto Sueldo para los empleados de Guayaquil
+    - [ ] Implementar un control en la ventana de Generar/Importar novedades para evitar que el Usuario se equivoque el momento de registrar el dato de Pagar en (Pay in) y registre como mensual una plantilla de una quincena o viceversa
+    - [ ] Corregir las reglas de cálculo para los fondos de reserva en el sistema en producción
+    - [X] Implementar una opción que permita imprimir la nómina por Departamento
+    - [X] Corregir el algoritmo de importación de las plantilla de horas extras, no está funcionando correctamente
+    - [ ] Revisar el algoritmo de recalculo del Rol, demora mucho tiempo
+    - [ ] Talento humano enviará el formato del archivo para la carga de las horas extras en la página web del IESS
+    - [ ] Talento humano enviará el formato para el pre impreso de solicitud de préstamos para que lo incluyamos en el sistema
+    - [ ] Incrementar método de pago Descuento al Rol para las cancelaciones de las compras de los empleados
+** Credits
+   :PROPERTIES:
+   :CUSTOM_ID: credits
+   :END:
+
+*** Images
+    :PROPERTIES:
+    :CUSTOM_ID: images
+    :END:
+
+- Odoo Community Association: [[https://github.com/OCA/maintainer-tools/blob/master/template/module/static/description/icon.svg][Icon]].
+
+*** Contributors
+    :PROPERTIES:
+    :CUSTOM_ID: contributors
+    :END:
+
+- Jonathan Finlay <[[mailto:jfinlay@lalibre.net][jfinlay@lalibre.net]]>
+- Edison Ibáñez <[[mailto:edison@disroot.org][edison@disroot.org]]>
+- Daniel Alejandro Mendieta
+  <[[mailto:damendieta@gmail.com][damendieta@gmail.com]]>
+- Fábrica de Software Libre
+  <[[mailto:desarrollo@libre.ec][desarrollo@libre.ec]]>
+
+*** Maintainer
+    :PROPERTIES:
+    :CUSTOM_ID: maintainer
+    :END:
+
+[[https://odoo-community.org][https://odoo-community.org/logo.png]]
+
+This module is maintained by the OCA.
+
+OCA, or the Odoo Community Association, is a nonprofit organization
+whose mission is to support the collaborative development of Odoo
+features and promote its widespread use.
+
+- To contribute to this module, please visit [[http://odoo-community.org]]

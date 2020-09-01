@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_wizard_hr_employee_account_statement" model="ir.ui.view">
+        <field name="name">view.hr.employee.account.statement</field>
+        <field name="model">hr.employee.statement</field>
+        <field name="arch" type="xml">
+            <form string="Employee Account Statement">
+                <group>
+                    <group>
+                        <group>
+                            <field name="date_from" />
+                            <field name="option" required="1" />
+                            <field name="type" required="1"/>
+                        </group>
+                        <group>
+                            <field name="date_to" required="1" />
+                            <field name="department_ids" attrs="{'invisible': [('option', 'in', ['all', 'employees'])]}" widget="many2many_tags"/>
+                            <field name="employee_ids" context="{'show_unemployed': True}" attrs="{'invisible': [('option', 'in', ['all', 'departments'])]}" widget="many2many_tags"/>
+                        </group>
+                    </group>
+                </group>
+                <footer>
+                    <button name="print_statement_pdf" string="Get PDF" class="btn-primary" type="object"/>
+                    <button name="print_statement_xlsx" string="Get XLSX" class="btn-primary" type="object"/>
+                    or
+                    <button string="Cancel" class="btn-default" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="action_wizard_hr_employee_account_statement">
+        <field name="name">Employee Account Statement</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">hr.employee.statement</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_wizard_hr_employee_account_statement"
+              action="action_wizard_hr_employee_account_statement"
+              parent="menu_hr_payroll_reports"
+              sequence="1"/>
+
+</odoo>

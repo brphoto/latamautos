@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="wizard_hr_salary_rule_map_form" model="ir.ui.view">
+        <field name="name">wizard.hr.salary.rule.map.form</field>
+        <field name="model">wizard.hr.salary.rule.map</field>
+        <field name="arch" type="xml">
+            <form string="Map Salary Rules">
+                <div class="oe_title">
+                    <h1>
+                        <field name="department_id" class="oe_inline" required="1" readonly="1"/>
+                    </h1>
+                </div>
+                <separator />
+                <field name="salary_rule_ids" widget="many2many_tags" invisible="1"/>
+                <field name="line_ids" >
+                    <tree string="Salary Rules" editable="bottom">
+                        <field name="salary_rule_id" required="1"/>
+                        <field name="account_debit" />
+                        <field name="account_credit" />
+                        <field name="analytic_account_id" />
+                        <field name="account_tax_id" />
+                        <field name="partner_id" />
+                    </tree>
+                </field>
+                <footer>
+                    <button name="map_rule_ids" string="Update" type="object" class="btn-primary" />
+                    or
+                    <button string="Cancel" class="btn-default" special="cancel" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

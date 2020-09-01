@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="wizard_hr_payslip_overtime_form" model="ir.ui.view">
+            <field name="name">wizard.hr.payslip.overtime.form</field>
+            <field name="model">wizard.hr.payslip.overtime</field>
+            <field name="arch" type="xml">
+                <form string="Generate/Import Overtime">
+                    <field name="state" invisible="1"/>
+                    <group attrs="{'invisible': [('state', '=', 'draft')]}">
+                        <field name="name" invisible="1"/>
+                        <field name="file_template" filename="name" class="oe_link" readonly="1"/>
+                    </group>
+                    <group attrs="{'invisible': [('state', '=', 'generated')]}">
+                        <field name="file_upload" />
+                        <field name="employee" />
+                    </group>
+                    <footer>
+                        <button name="generate_template" string="Generate Template" type="object" class="btn-primary" />
+                        <button name="import_template" string="Import Template" type="object" class="btn-primary" attrs="{'invisible': [('state', '=', 'generated')]}" />
+                        or
+                        <button string="Cancel" class="btn-default" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="action_wizard_hr_payslip_overtime">
+            <field name="name">Generate/Import overtime</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">wizard.hr.payslip.overtime</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+    </data>
+</odoo>

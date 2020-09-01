@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_wizard_hr_payroll_print" model="ir.ui.view">
+        <field name="name">view.wizard.hr.payroll.print</field>
+        <field name="model">wizard.hr.payroll.print</field>
+        <field name="arch" type="xml">
+            <form string="Payroll Print">
+                <group>
+                    <field name="run_id" invisible="1"/>
+                    <field name="print_option" />
+                    <field name="department_ids" attrs="{'invisible': [('print_option', 'in', ['all', 'employees'])]}" widget="many2many_tags"/>
+                    <field name="employee_ids" attrs="{'invisible': [('print_option', 'in', ['all', 'department'])]}" widget="many2many_tags"/>
+                    <field name="slip_ids" invisible="1" />
+                </group>
+                <footer>
+                    <button name="print_payslip_pdf" string="Print PDF" class="btn-primary" type="object"/>
+                    <button name="print_payslip_xlsx" string="Print XLSX" class="btn-primary" type="object"/>
+                    <button name="print_payslip_txt" string="Print TXT" class="btn-primary" type="object"/>
+                    or
+                    <button string="Cancel" class="btn-default" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>
