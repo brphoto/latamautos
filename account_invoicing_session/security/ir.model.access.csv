@@ -1,0 +1,6 @@
+"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
+"access_account_invoicing_session_account_invoice","account_invoicing_session account invoice","model_account_invoicing_session","account.group_account_invoice",1,1,1,1
+"access_account_payment_summary_account_invoice","account_payment_summary account invoice","model_account_payment_summary","account.group_account_invoice",1,1,1,1
+"access_base_ir_sequence_account_invoice","base_ir_sequence account invoice","base.model_ir_sequence","account.group_account_invoice",1,1,1,1
+"access_account_invoicing_session_all","account_invoicing_session all","model_account_invoicing_session",,1,1,0,0
+"access_account_payment_summary_all","account_payment_summary all","model_account_payment_summary",,1,1,0,0

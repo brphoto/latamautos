@@ -1,0 +1,717 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <template id="invoicing_session_content_report">
+        <t t-if="format_id.header">
+            <div style="width:100%;">
+                <span t-field="format_id.header"/>
+            </div>
+        </t>
+        <table class="table-condensed" style="table-layout:fixed; border-collapse: collapse; empty-cells: show; width: 100%;">
+
+            <tbody>
+                <tr style="text-align:left;">
+                    <td style="text-align:left;">
+                        <strong>SESIÓN: </strong>
+                        <span t-esc="doc.name"/>
+                        <br/>
+
+                        <strong>DIARIO: </strong>
+                        <t t-esc="doc.journal_id.name" />
+                        <br/>
+
+                        <strong>RESPONSABLE: </strong>
+                        <t t-esc="doc.user_id.name"/>
+                        <br/>
+                    </td>
+                    <td style="text-align:left;">
+                        <strong>TIPO DE SESIÓN: </strong>
+                        <t t-if="doc.type == 'sale'">
+                            <t>Venta</t>
+                        </t>
+                        <t t-if="doc.type == 'purchase'">
+                            <t>Compra</t>
+                        </t>
+                        <br/>
+
+                        <strong>FECHA DE INICIO: </strong>
+                        <span
+                                t-field="doc.date_from"
+                                t-field-options="{&quot;format&quot;: &quot;yyyy-MM-dd HH:MM&quot;}"/>
+                        <br/>
+
+                        <strong>FECHA DE CIERRE: </strong>
+                        <span
+                                t-field="doc.date_to"
+                                t-field-options="{&quot;format&quot;: &quot;yyyy-MM-dd HH:MM&quot;}"/>
+                        <br/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <strong>DESCRIPCIÓN: </strong>
+                        <t t-esc="doc.communication"/>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <t t-set="total_facturado" t-value="0.0" />
+        <t t-if="doc.invoice_amount > 0.0">
+
+            <strong>FACTURAS:</strong>
+            <br/>
+
+            <t t-set="journals" t-value="doc.invoice_ids.mapped('journal_id')" />
+            <t t-foreach="journals" t-as="jou">
+                <!--<t t-set="total" t-value="0" />-->
+
+                <t t-set="total_subt" t-value="0" />
+                <t t-set="total_imp" t-value="0" />
+
+
+                <strong t-if="jou">
+                    <ins>
+                        <t t-esc="jou.name"/>
+                    </ins>
+                </strong>
+
+                <table class="table-condensed" style="margin-top: 0.5em; margin-bottom: 0.5em; border-collapse: collapse; empty-cells: show; width: 100%;">
+                    <thead>
+                        <th style="border: black 1px solid; text-align:center;">
+                            SEC.
+                        </th>
+                        <th style="border: black 1px solid; text-align:center;">
+                            REGISTRO
+                        </th>
+                        <th style="border: black 1px solid; text-align:center;">
+                            FECHA
+                        </th>
+                        <th style="border: black 1px solid; text-align:center;">
+                            F.VENC
+                        </th>
+                        <th style="border: black 1px solid; text-align:center;">
+                            CLIENTE
+                        </th>
+                        <th style="border: black 1px solid; text-align:center;">
+                            S.TOTAL
+                        </th>
+                        <th style="border: black 1px solid; text-align:center;">
+                            IMP.
+                        </th>
+                        <th style="border: black 1px solid; text-align:center;">
+                            TOTAL
+                        </th>
+                        <th style="border: black 1px solid; text-align:center;">
+                            PENDIENTE
+                        </th>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="doc.invoice_ids" t-as="inv">
+                            <t t-if="inv.type in ('in_invoice','out_invoice')">
+                                <td style="text-align:left; padding-left: 1mm; border: solid black 1px;">
+                                    <span t-esc="inv.secuencial"/>
+                                </td>
+                                <td style="text-align:left; padding-left: 1mm; border: solid black 1px;">
+                                    <span t-esc="inv.number"/>
+                                </td>
+                                <td style="padding-left:1mm; text-align:left;border: solid black 1px;">
+                                    <span
+                                            t-field="inv.date_invoice"
+                                            t-field-options="{&quot;format&quot;: &quot;yyyy-MM-dd&quot;}"/>
+                                </td>
+                                <td style="padding-left:1mm; text-align:left;border: solid black 1px;">
+                                    <span
+                                            t-field="inv.date_due"
+                                            t-field-options="{&quot;format&quot;: &quot;yyyy-MM-dd&quot;}"/>
+                                </td>
+                                <td style="padding-right: 1mm; text-align:right;border: solid black 1px;">
+                                    <span t-esc="inv.partner_id.name"/>
+                                </td>
+                                <td style="padding-right: 1mm; text-align:right;border: solid black 1px;">
+                                    <span t-esc="'{0:,.2f}'.format(inv.subtotal)"/>
+                                    <t t-set="total_subt" t-value="total_subt + round(inv.subtotal, 2)" />
+                                </td>
+                                <td style="padding-right: 1mm; text-align:right;border: solid black 1px;">
+                                    <span t-esc="'{0:,.2f}'.format(inv.montoiva + inv.montoice)"/>
+                                    <t t-set="total_imp" t-value="total_imp + round(inv.montoiva + inv.montoice, 2)" />
+                                </td>
+                                <td style="padding-right: 1mm; text-align:right;border: solid black 1px;">
+                                    <span t-esc="'{0:,.2f}'.format(inv.total)"/>
+                                    <t t-set="total_facturado" t-value="total_facturado + round(inv.total, 2)" />
+                                </td>
+                                <td style="padding-right: 1mm; text-align:right;border: solid black 1px;">
+                                    <span t-esc="'{0:,.2f}'.format(inv.residual)"/>
+                                </td>
+                            </t>
+                        </tr>
+
+
+                        <tr>
+                            <td style="padding-left: 1mm; text-align:left;border: solid black 1px;" colspan="5">
+                                <strong>TOTAL FACTURACIÓN DEL DÍA</strong>
+                            </td>
+                            <td style="padding-left: 1mm; text-align:right;border: solid black 1px;">
+                                <t t-esc="'{0:,.2f}'.format(total_subt)"/>
+                                <br/>
+                            </td>
+                            <td style="padding-left: 1mm; text-align:right;border: solid black 1px;">
+                                <t t-esc="'{0:,.2f}'.format(total_imp)"/>
+                                <br/>
+                            </td>
+                            <td style="padding-left: 1mm; text-align:right;border: solid black 1px;">
+                                <t t-esc="'{0:,.2f}'.format(total_facturado)"/>
+                                <br/>
+                            </td>
+                            <td style="padding-left: 1mm; text-align:right;border: solid black 1px;">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </t>
+        </t>
+        <t t-if="doc.refund_amount > 0.0">
+
+            <strong>NOTAS DE CREDITO:</strong>
+            <br/>
+
+            <t t-set="journals" t-value="doc.invoice_ids.mapped('journal_id')" />
+            <t t-foreach="journals" t-as="jou">
+                <t t-set="total" t-value="0" />
+
+                <t t-set="total_subt" t-value="0" />
+                <t t-set="total_imp" t-value="0" />
+
+                <strong t-if="jou">
+                    <ins>
+                        <t t-esc="jou.name"/>
+                    </ins>
+                </strong>
+
+                <table class="table-condensed" style="margin-top: 0.5em; margin-bottom: 0.5em; border-collapse: collapse; empty-cells: show; width: 100%;">
+                    <thead>
+                        <th style="border: black 1px solid; text-align:center;">
+                            SEC.
+                        </th>
+                        <th style="border: black 1px solid; text-align:center;">
+                            REGISTRO
+                        </th>
+                        <th style="border: black 1px solid; text-align:center;">
+                            FECHA
+                        </th>
+                        <th style="border: black 1px solid; text-align:center;">
+                            F.VENC
+                        </th>
+                        <th style="border: black 1px solid; text-align:center;">
+                            CLIENTE
+                        </th>
+                        <th style="border: black 1px solid; text-align:center;">
+                            S.TOTAL
+                        </th>
+                        <th style="border: black 1px solid; text-align:center;">
+                            IMP.
+                        </th>
+                        <th style="border: black 1px solid; text-align:center;">
+                            TOTAL
+                        </th>
+                        <th style="border: black 1px solid; text-align:center;">
+                            PENDIENTE
+                        </th>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="doc.invoice_ids" t-as="inv">
+                            <t t-if="inv.type in ('in_refund','out_refund')">
+                                <td style="text-align:left; padding-left: 1mm; border: solid black 1px;">
+                                    <span t-esc="inv.secuencial"/>
+                                </td>
+                                <td style="text-align:left; padding-left: 1mm; border: solid black 1px;">
+                                    <span t-esc="inv.number"/>
+                                </td>
+                                <td style="padding-left:1mm; text-align:left;border: solid black 1px;">
+                                    <span
+                                            t-field="inv.date_invoice"
+                                            t-field-options="{&quot;format&quot;: &quot;yyyy-MM-dd&quot;}"/>
+                                </td>
+                                <td style="padding-left:1mm; text-align:left;border: solid black 1px;">
+                                    <span
+                                            t-field="inv.date_due"
+                                            t-field-options="{&quot;format&quot;: &quot;yyyy-MM-dd&quot;}"/>
+                                </td>
+                                <td style="padding-right: 1mm; text-align:right;border: solid black 1px;">
+                                    <span t-esc="inv.partner_id.name"/>
+                                </td>
+                                <td style="padding-right: 1mm; text-align:right;border: solid black 1px;">
+                                    <span t-esc="'{0:,.2f}'.format(inv.subtotal)"/>
+                                    <t t-set="total_subt" t-value="total_subt + round(inv.subtotal, 2)" />
+                                </td>
+                                <td style="padding-right: 1mm; text-align:right;border: solid black 1px;">
+                                    <span t-esc="'{0:,.2f}'.format(inv.montoiva + inv.montoice)"/>
+                                    <t t-set="total_imp" t-value="total_imp + round(inv.montoiva + inv.montoice, 2)" />
+                                </td>
+                                <td style="padding-right: 1mm; text-align:right;border: solid black 1px;">
+                                    <span t-esc="'{0:,.2f}'.format(inv.total)"/>
+                                    <t t-set="total" t-value="total + round(inv.total, 2)" />
+                                </td>
+                                <td style="padding-right: 1mm; text-align:right;border: solid black 1px;">
+                                    <span t-esc="'{0:,.2f}'.format(inv.residual)"/>
+                                </td>
+                            </t>
+                        </tr>
+
+                        <tr>
+                            <td style="padding-left: 1mm; text-align:left;border: solid black 1px;" colspan="5">
+                                <strong>TOTAL NOTAS DE CREDITO</strong>
+                            </td>
+                            <td style="padding-left: 1mm; text-align:right;border: solid black 1px;">
+                                <t t-esc="'{0:,.2f}'.format(total_subt)"/>
+                                <br/>
+                            </td>
+                            <td style="padding-left: 1mm; text-align:right;border: solid black 1px;">
+                                <t t-esc="'{0:,.2f}'.format(total_imp)"/>
+                                <br/>
+                            </td>
+                            <td style="padding-left: 1mm; text-align:right;border: solid black 1px;">
+                                <t t-esc="'{0:,.2f}'.format(total)"/>
+                                <br/>
+                            </td>
+                            <td style="padding-left: 1mm; text-align:right;border: solid black 1px;">
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </t>
+        </t>
+
+        <strong>PAGOS:</strong>
+        <br/>
+
+        <t t-set="journals" t-value="doc.payment_ids.mapped('journal_id')" />
+
+        <t t-foreach="journals" t-as="jou">
+            <t t-set="total_in" t-value="0" />
+            <t t-set="total_eg" t-value="0" />
+            <strong t-if="jou">
+                <t t-esc="jou.name"/>
+            </strong>
+            <table class="table-condensed" style="margin-top: 0.5em; margin-bottom: 0.5em; border-collapse: collapse; empty-cells: show; width: 100%;">
+                <thead>
+                    <th style="border: black 1px solid; border-right: black 1px solid;">
+                        TIPO
+                    </th>
+                    <th style="border: black 1px solid; text-align:center;">
+                        NO.
+                    </th>
+                    <th style="border: black 1px solid; text-align:center;">
+                        REGISTRO
+                    </th>
+                    <th style="border: black 1px solid; text-align:center;">
+                        FECHA
+                    </th>
+                    <th style="border: black 1px solid; text-align:center;">
+                        F.DEPOSITO
+                    </th>
+                    <th style="border: black 1px solid; text-align:center;">
+                        CLIENTE
+                    </th>
+                    <th style="border: black 1px solid; text-align:center;">
+                        VALOR
+                    </th>
+                    <th style="border: black 1px solid; text-align:center;">
+                        ORIGEN
+                    </th>
+                </thead>
+                <tbody>
+                    <tr t-foreach="doc.payment_ids" t-as="pay">
+                        <t t-if="pay.journal_id == jou">
+                            <td style="text-align:left; padding-left: 1mm; border: solid black 1px;">
+                                <t t-if="pay.payment_type == 'outbound'">
+                                    <t t-set="total_eg" t-value="total_eg + pay.amount" />
+                                    EG
+                                </t>
+                                <t t-if="pay.payment_type == 'inbound'">
+                                    <t t-set="total_in" t-value="total_in + pay.amount" />
+                                    IN
+                                </t>
+                                <t t-if="pay.payment_type == 'transfer'">
+                                    TR
+                                </t>
+                            </td>
+                            <td style="text-align:left; padding-left: 1mm; border: solid black 1px;">
+                                <span t-esc="pay.check_number"/>
+                            </td>
+                            <td style="text-align:left; padding-left: 1mm; border: solid black 1px;">
+                                <span t-esc="pay.name"/>
+                            </td>
+                            <td style="padding-left:1mm; text-align:left;border: solid black 1px;">
+                                <span
+                                        t-field="pay.payment_date"
+                                        t-field-options="{&quot;format&quot;: &quot;yyyy-MM-dd&quot;}"/>
+                            </td>
+                            <td style="padding-left:1mm; text-align:left;border: solid black 1px;">
+<!--                                <span-->
+<!--                                        t-field="pay.date_deposit"-->
+<!--                                        t-field-options="{&quot;format&quot;: &quot;yyyy-MM-dd&quot;}"/>-->
+                            </td>
+                            <td style="padding-right: 1mm; text-align:right;border: solid black 1px;">
+                                <t t-if="pay.destination_journal_id">
+                                    <t t-esc="pay.destination_journal_id.name"/>
+                                </t>
+                                <t t-if="pay.partner_id">
+                                    <span t-esc="pay.partner_id.name"/>
+                                </t>
+                            </td>
+                            <td style="padding-right: 1mm; text-align:right;border: solid black 1px;">
+                                <span t-esc="'{0:,.2f}'.format(pay.amount)"/>
+                            </td>
+                            <td style="padding-right: 1mm; text-align:right;border: solid black 1px;">
+                                <t t-if="pay.invoice_ids">
+                                    <t t-foreach="pay.invoice_ids" t-as="p_inv">
+                                        <t t-esc="p_inv.secuencial"/>
+                                        <t> </t>
+                                    </t>
+                                </t>
+                            </td>
+                        </t>
+                    </tr>
+                    <tr>
+                        <td style="padding-left: 1mm; text-align:left;border: solid black 1px;" colspan="6">
+                            <strong>BALANCE</strong>
+                        </td>
+                        <td style="padding-left: 1mm; text-align:right;border: solid black 1px;">
+                            <t t-esc="'{0:,.2f}'.format(total_in - total_eg)"/>
+                            <br/>
+                        </td>
+                        <td style="padding-right: 1mm; text-align:right;border: solid white 1px;">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </t>
+        <br/>
+        <br/>
+        <strong>RESUMEN DE LA SESIÓN:</strong>
+        <br/>
+        <!--<t>TOTAL FACTURADO: </t>
+            <t t-esc="'{0:,.2f}'.format(doc.invoice_amount)"/>
+            <br/>-->
+        <!--<t>TOTAL DE NOTAS DE CRÉDITO: </t>
+            <t t-esc="'{0:,.2f}'.format(doc.refund_amount)"/>
+            <br/>-->
+        <!--<t>BALANCE: </t>
+            <t t-esc="'{0:,.2f}'.format(doc.session_amount)"/>
+            <br/>-->
+
+        <t t-set="total_con_condicion_pago" t-value="0.0" />
+
+        <t t-set="payment_term" t-value="doc.invoice_ids.mapped('payment_term_id')" />
+        <table class="table-condensed" style="width: 50%;">
+            <thead>
+                <th>
+                    FACTURAS
+                </th>
+                <th></th>
+            </thead>
+            <tbody>
+                <tr t-foreach="payment_term" t-as="jou">
+
+                    <t t-set="total" t-value="0" />
+                    <t t-foreach="doc.invoice_ids" t-as="inv">
+                        <t t-if="inv.payment_term_id == jou and 'invoice' in inv.type">
+                            <t t-set="total" t-value="total + inv.total" />
+                        </t>
+                    </t>
+
+                    <td style="text-align:left; padding-left: 1mm;">
+                        CONDICIÓN DE PAGO <t t-if="jou">"<t t-esc="jou.name"/>"</t>
+                    </td>
+                    <td style="text-align:right; padding-left: 1mm;">
+                        <t t-esc="'{0:,.2f}'.format(total)"/>
+                        <t t-set="total_con_condicion_pago" t-value="total_con_condicion_pago + total" />
+                    </td>
+                </tr>
+                <t t-if="(total_facturado - total_con_condicion_pago) > 0.0">
+                    <tr>
+                        <td style="text-align:left; padding-left: 1mm;">
+                            <i>*** SIN CONDICIÓN DE PAGO ***</i>
+                        </td>
+                        <td style="text-align:right; padding-left: 1mm;">
+                            <t t-esc="'{0:,.2f}'.format(total_facturado - total_con_condicion_pago)"/>
+                        </td>
+                    </tr>
+                </t>
+                <tr>
+                    <td style="text-align:right; padding-left: 1mm;">
+                        <b>TOTAL FACTURACIÓN DEL DÍA</b>
+                    </td>
+                    <td style="text-align:right; padding-left: 1mm; border-top: solid black 1px;">
+                        <t t-esc="'{0:,.2f}'.format(total_facturado)"/>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <t t-set="journals" t-value="doc.invoice_ids.mapped('journal_id')" />
+        <t t-set="total_notas_credito" t-value="0.0" />
+        <table class="table-condensed" style="width: 50%;">
+            <thead>
+                <th>NOTAS DE CRÉDITO</th>
+                <th></th>
+            </thead>
+            <tbody>
+                <tr t-foreach="journals" t-as="jou">
+                    <t t-set="total" t-value="0.0" />
+                    <t t-foreach="doc.invoice_ids" t-as="inv">
+                        <t t-if="'refund' in inv.type and inv.journal_id == jou">
+                            <t t-set="total" t-value="total + inv.total" />
+                        </t>
+                    </t>
+                    <t t-if="total > 0.0">
+                        <td style="text-align:left; padding-left: 1mm;">
+                            DIARIO <t t-if="jou">"<t t-esc="jou.name"/>"</t>
+                        </td>
+                        <td style="text-align:right; padding-left: 1mm;">
+                            <t t-esc="'{0:,.2f}'.format(total)"/>
+                            <t t-set="total_notas_credito" t-value="total_notas_credito + total" />
+                        </td>
+                    </t>
+                </tr>
+
+                <tr>
+                    <td style="text-align:right; padding-left: 1mm;">
+                        <b>TOTAL NOTAS DE CRÉDITO</b>
+                    </td>
+                    <td style="text-align:right; padding-left: 1mm; border-top: solid black 1px;">
+                        <t t-esc="'{0:,.2f}'.format(total_notas_credito)"/>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <t t-set="total_pagos" t-value="0" />
+        <t t-set="journals" t-value="doc.payment_ids.mapped('journal_id')" />
+        <table class="table-condensed" style="width: 50%;">
+            <thead>
+                <th>
+                    PAGOS
+                </th>
+                <th></th>
+            </thead>
+            <tbody>
+                <tr t-foreach="journals" t-as="jou">
+
+                    <t t-set="total_in" t-value="0" />
+					<t t-set="total_eg" t-value="0" />
+                    <t t-foreach="doc.payment_ids" t-as="pay">
+                        <t t-set="types" t-value="pay.invoice_ids.mapped('type')"/>
+                        <t t-if="pay.journal_id == jou">
+                            <t t-if="pay.payment_type == 'outbound'">
+								<t t-set="total_eg" t-value="total_eg + pay.amount" />
+							</t>
+							<t t-if="pay.payment_type == 'inbound'">
+								<t t-set="total_in" t-value="total_in + pay.amount" />
+							</t>
+                        </t>
+                    </t>
+
+                    <t t-set="balance_pago" t-value="total_in - total_eg" />
+                    <t t-if="balance_pago != 0.0">
+                        <td style="text-align:left; padding-left: 1mm;">
+                            DIARIO <t t-if="jou">"<t t-esc="jou.name"/>"</t>
+                        </td>
+                        <td style="text-align:right; padding-left: 1mm;">
+                            <t t-esc="'{0:,.2f}'.format(balance_pago)"/>
+                            <t t-set="total_pagos" t-value="total_pagos + balance_pago" />
+                        </td>
+                    </t>
+                </tr>
+                <tr>
+                    <td style="text-align:right; padding-left: 1mm;">
+                        <b>TOTAL PAGOS</b>
+                    </td>
+                    <td style="text-align:right; padding-left: 1mm; border-top: solid black 1px;">
+                        <t t-esc="'{0:,.2f}'.format(total_pagos)"/>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="table-condensed" style="width: 50%;">
+            <thead>
+                <th style="border-top: solid black 1px;">BALANCE DEL DÍA</th>
+                <th style="text-align:right; border-top: solid black 1px;">
+                    <t t-esc="'{0:,.2f}'.format(total_facturado + total_notas_credito + total_pagos)"/>
+                </th>
+            </thead>
+        </table>
+        <br></br>
+        <t t-set="total_subt" t-value="0" />
+        <t t-set="total_imp" t-value="0" />
+        <t t-set="total_facturado" t-value="0" />
+        <t t-set="invoice_payment_term_id" t-value="doc.invoice_ids.filtered(lambda x: not x.payment_term_id and x.type in ('out_invoice', 'in_invoice'))" />
+        <t t-if="invoice_payment_term_id">
+            <strong>
+                <ins>
+                    <span>Facturas sin Condición de Pago</span>
+                </ins>
+            </strong>
+            <table class="table-condensed" style="margin-top: 0.5em; margin-bottom: 0.5em; border-collapse: collapse; empty-cells: show; width: 100%;">
+                <thead>
+                    <th style="border: black 1px solid; text-align:center;">
+                        SEC.
+                    </th>
+                    <th style="border: black 1px solid; text-align:center;">
+                        REGISTRO
+                    </th>
+                    <th style="border: black 1px solid; text-align:center;">
+                        FECHA
+                    </th>
+                    <th style="border: black 1px solid; text-align:center;">
+                        F.VENC
+                    </th>
+                    <th style="border: black 1px solid; text-align:center;">
+                        CLIENTE
+                    </th>
+                    <th style="border: black 1px solid; text-align:center;">
+                        S.TOTAL
+                    </th>
+                    <th style="border: black 1px solid; text-align:center;">
+                        IMP.
+                    </th>
+                    <th style="border: black 1px solid; text-align:center;">
+                        TOTAL
+                    </th>
+                    <th style="border: black 1px solid; text-align:center;">
+                        PENDIENTE
+                    </th>
+                </thead>
+                <tbody>
+                    <tr t-foreach="invoice_payment_term_id" t-as="inv">
+                        <td style="text-align:left; padding-left: 1mm; border: solid black 1px;">
+                            <span t-esc="inv.secuencial"/>
+                        </td>
+                        <td style="text-align:left; padding-left: 1mm; border: solid black 1px;">
+                            <span t-esc="inv.number"/>
+                        </td>
+                        <td style="padding-left:1mm; text-align:left;border: solid black 1px;">
+                            <span
+                                    t-field="inv.date_invoice"
+                                    t-field-options="{&quot;format&quot;: &quot;yyyy-MM-dd&quot;}"/>
+                        </td>
+                        <td style="padding-left:1mm; text-align:left;border: solid black 1px;">
+                            <span
+                                    t-field="inv.date_due"
+                                    t-field-options="{&quot;format&quot;: &quot;yyyy-MM-dd&quot;}"/>
+                        </td>
+                        <td style="padding-right: 1mm; text-align:right;border: solid black 1px;">
+                            <span t-esc="inv.partner_id.name"/>
+                        </td>
+                        <td style="padding-right: 1mm; text-align:right;border: solid black 1px;">
+                            <span t-esc="'{0:,.2f}'.format(inv.subtotal)"/>
+                            <t t-set="total_subt" t-value="total_subt + round(inv.subtotal, 2)" />
+                        </td>
+                        <td style="padding-right: 1mm; text-align:right;border: solid black 1px;">
+                            <span t-esc="'{0:,.2f}'.format(inv.montoiva + inv.montoice)"/>
+                            <t t-set="total_imp" t-value="total_imp + round(inv.montoiva + inv.montoice, 2)" />
+                        </td>
+                        <td style="padding-right: 1mm; text-align:right;border: solid black 1px;">
+                            <span t-esc="'{0:,.2f}'.format(inv.total)"/>
+                            <t t-set="total_facturado" t-value="total_facturado + round(inv.total, 2)" />
+                        </td>
+                        <td style="padding-right: 1mm; text-align:right;border: solid black 1px;">
+                            <span t-esc="'{0:,.2f}'.format(inv.residual)"/>
+                        </td>
+                    </tr>
+
+
+                    <tr>
+                        <td style="padding-left: 1mm; text-align:left;border: solid black 1px;" colspan="5">
+                            <strong>TOTAL FACTURACIÓN SIN CONDICIÓN DE PAGO</strong>
+                        </td>
+                        <td style="padding-left: 1mm; text-align:right;border: solid black 1px;">
+                            <t t-esc="'{0:,.2f}'.format(total_subt)"/>
+                            <br/>
+                        </td>
+                        <td style="padding-left: 1mm; text-align:right;border: solid black 1px;">
+                            <t t-esc="'{0:,.2f}'.format(total_imp)"/>
+                            <br/>
+                        </td>
+                        <td style="padding-left: 1mm; text-align:right;border: solid black 1px;">
+                            <t t-esc="'{0:,.2f}'.format(total_facturado)"/>
+                            <br/>
+                        </td>
+                        <td style="padding-left: 1mm; text-align:right;border: solid black 1px;">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <br/>
+        </t>
+
+
+        <table align="center" class="table-condensed" style="margin-top: 0.5em; margin-bottom: 0.5em; table-layout:fixed; border-collapse: collapse;empty-cells: show; width: 100%;">
+            <tbody>
+                <tr>
+                    <th style="text-align:center; border: solid black 1px; width: 25%;" >
+                        RESPONSABLE
+                    </th>
+                    <th style="text-align:center; border: solid black 1px; width:25%;">
+                        APROBADO POR
+                    </th>
+
+                    <th style="text-align:center; border: solid black 1px; width:25%;">
+                        CONTADOR
+                    </th>
+                </tr>
+                <tr>
+                    <td style="border: solid black 1px;">
+                        <div style="height: 2em;">
+                            <span t-esc="doc.create_uid.name.upper()" />
+                        </div>
+                    </td>
+                    <td style="border: solid black 1px;"/>
+                    <td style="border: solid black 1px;"/>
+                </tr>
+            </tbody>
+        </table>
+        <t>Impreso por <t t-esc="user.name"/>, con fecha </t>
+        <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%d/%m/%Y %H:%M')"/>
+        <t t-if="format_id.footer">
+            <div style="width:100%;">
+                <span t-field="format_id.footer"/>
+            </div>
+        </t>
+    </template>
+
+    <template id="invoicing_session_portrait_report">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-set="format_id" t-value="user.session_format_id"/>
+		        <div class="page" t-att-style="format_id.page_style">
+                    <t t-call="account_invoicing_session.invoicing_session_content_report"/>
+		            <t t-if="int(format_id.copies) > 1">
+		                <div t-att-style="format_id.separator_style"/>
+                        <t t-call="account_invoicing_session.invoicing_session_content_report"/>
+		            </t>
+		            <t t-if="int(format_id.copies) > 2">
+			            <div t-att-style="format_id.separator_style"/>
+                        <t t-call="account_invoicing_session.invoicing_session_content_report"/>
+		            </t>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <report
+            id="account_invoicing_session.invoicing_session_portrait_report_id"
+            model="account.invoicing.session"
+            string="Reporte de sessión"
+            name="account_invoicing_session.invoicing_session_portrait_report"
+            file="reporte_de_sesion"
+            report_type="qweb-pdf"/>
+
+    <record id="account_invoicing_session.invoicing_session_portrait_report_id" model="ir.actions.report">
+        <field name="paperformat_id" ref="base_report.a4_portrait_5555"/>
+    </record>
+</odoo>
