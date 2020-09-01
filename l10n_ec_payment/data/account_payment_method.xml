@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <data>
+    <!-- Renombrar los metodos existentes -->
+    <record id="account.account_payment_method_manual_out" model="account.payment.method">
+      <field name="name">Deposito o transferencia</field>
+    </record>
+    <record id="account.account_payment_method_manual_in" model="account.payment.method">
+      <field name="name">Deposito o transferencia</field>
+    </record>
+    <record id="account_check_printing.account_payment_method_check" model="account.payment.method">
+      <field name="name">Cheque</field>
+    </record>
+
+    <!-- Crea metodos nuevos -->
+    <record id="payment_method_tarjetacredito_in" model="account.payment.method">
+      <field name="name">Tarjeta de Crédito</field>
+      <field name="code">tarjetacredito</field>
+      <field name="payment_type">inbound</field>
+    </record>
+    <record id="payment_method_notacredito_in" model="account.payment.method">
+      <field name="name">Nota de crédito</field>
+      <field name="code">notacredito</field>
+      <field name="payment_type">inbound</field>
+    </record>
+    <record id="payment_method_tarjetacredito_out" model="account.payment.method">
+      <field name="name">Tarjeta de crédito</field>
+      <field name="code">tarjetacredito</field>
+      <field name="payment_type">outbound</field>
+    </record>
+    <record id="payment_method_notadebito_out" model="account.payment.method">
+      <field name="name">Nota de débito</field>
+      <field name="code">notadebito</field>
+      <field name="payment_type">outbound</field>
+    </record>
+    <record id="payment_method_compensaciondeudas_in" model="account.payment.method">
+      <field name="name">Compensación de deudas</field>
+      <field name="code">compensaciondeudas</field>
+      <field name="payment_type">inbound</field>
+    </record>
+    <record id="payment_method_compensaciondeudas_out" model="account.payment.method">
+      <field name="name">Compensación de deudas</field>
+      <field name="code">compensaciondeudas</field>
+      <field name="payment_type">outbound</field>
+    </record>
+  </data>
+</odoo>

@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="view_invoice_supplier_form_ec_payment" model="ir.ui.view">
+            <field name="name">account.invoice.supplier.form.ec.payment</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_supplier_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='number']" position="before">
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" name="button_supplier_payments"
+                                string="PAGOS" type="object"
+                                icon="fa-bars"/>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+        <record id="view_invoice_form_ec" model="ir.ui.view">
+            <field name="name">account.invoice.form.ec.payment</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='number']" position="before">
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" name="button_customer_payments"
+                                string="COBROS" type="object"
+                                icon="fa-bars"/>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="view_res_bank_form_ec" model="ir.ui.view">
+            <field name="name">Ecuador Bank form view</field>
+            <field name="model">res.bank</field>
+            <field name="inherit_id" ref="base.view_res_bank_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='name']" position="after">
+                    <field name="credit_card_issuer" />
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

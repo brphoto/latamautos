@@ -1,0 +1,2 @@
+"id","name","model_id:id","group_id:id","perm_read","perm_write","perm_create","perm_unlink"
+"access_model_spanish_to_word_account_group_account_invoice","access_model_spanish_to_word_account_group_account_invoice","model_spanish_to_word","account.group_account_invoice",1,1,1,1

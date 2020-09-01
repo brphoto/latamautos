@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="view_account_payment_form_ec" model="ir.ui.view">
+            <field name="name">Ecuador Payment form view</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_payment_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//div[@name='amount_div']" position="after">
+                    <field name="state" invisible="1" />
+                    <field name="payment_slip_number"
+                           attrs="{'invisible': [('payment_method_code', '!=', 'manual')], 'readonly': [('state', '!=', 'draft')]}"/>
+                    <field name="payment_slip_file"
+                           widget="image"
+                           attrs="{'invisible': [('payment_method_code', '!=', 'manual')], 'readonly': [('state', '!=', 'draft')]}"/>
+                    <field name="check_city"
+                           attrs="{'invisible': [('payment_method_code', '!=', 'check_printing')]}" />
+                    <field name="check_receiver"
+                           attrs="{'invisible': [('payment_method_code', '!=', 'check_printing')]}" />
+                    <field name="check_usetradename"
+                           attrs="{'invisible': [('payment_method_code', '!=', 'check_printing')]}" />
+                </xpath>
+                <xpath expr="//field[@name='payment_date']" position="after">
+                    <field name="secuencial" />
+                    <field name="bank_id" attrs="{'invisible': [('payment_method_code', '!=', 'tarjetacredito')], 'required': [('payment_method_code', '==', 'tarjetacredito')], 'readonly': [('state', '!=', 'draft')]}" />
+                    <field name="prepayment"
+                           attrs="{'readonly': ['|', ('state', '!=', 'draft'), ('payment_type', '=', 'transfer')]}"/>
+                        <field
+                            name="contrapartida_id"
+                            options='{"no_create_edit": True, "no_open": True, "no_quick_create": True}'
+                            attrs="{
+                                'invisible': [('prepayment', '!=', True)],
+                                'required': [('prepayment', '==', True)],
+                                'readonly': [
+                                        '|',
+                                        ('state', '!=', 'draft'),
+                                        ('payment_type', '=', 'transfer')
+                                    ]
+                                }"
+                            />
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_account_payment_invoice_form_ec" model="ir.ui.view">
+            <field name="name">Ecuador Payment invoice form view</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_payment_invoice_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//div[@name='amount_div']" position="after" >
+                    <field name="state" invisible="1" />
+                    <field name="payment_slip_number"
+                           attrs="{'invisible': [('payment_method_code', '==', 'check_printing')]}"/>
+                    <field name="payment_slip_file"
+                           widget="image"
+                           attrs="{'invisible': [('payment_method_code', '==', 'check_printing')]}" />
+                    <field name="check_city"
+                           attrs="{'invisible': [('payment_method_code', '!=', 'check_printing')], 'readonly': [('state', '!=', 'draft')]}" />
+                    <field name="check_receiver"
+                           attrs="{'invisible': [('payment_method_code', '!=', 'check_printing')], 'readonly': [('state', '!=', 'draft')]}" />
+                    <field name="check_usetradename"
+                           attrs="{'invisible': [('payment_method_code', '!=', 'check_printing')], 'readonly': [('state', '!=', 'draft')]}" />
+                </xpath>
+                <xpath expr="//field[@name='payment_date']" position="after">
+                    <field name="secuencial" />
+                    <field name="bank_id" attrs="{'invisible': [('payment_method_code', '!=', 'tarjetacredito')], 'required': [('payment_method_code', '==', 'tarjetacredito')], 'readonly': [('state', '!=', 'draft')]}" />
+                    <field name="prepayment"
+                           attrs="{'readonly': ['|', ('state', '!=', 'draft'), ('payment_type', '=', 'transfer')]}"/>
+                    <field name="contrapartida_id"
+                           attrs="{'invisible': [('prepayment', '==', False)], 'required': [('prepayment', '!=', False)], 'readonly': ['|', ('state', '!=', 'draft'), ('payment_type', '=', 'transfer')]}" />
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_account_payment_from_invoices_ec" model="ir.ui.view">
+            <field name="name">Ecuador Payment multi invoices form view</field>
+            <field name="model">account.register.payments</field>
+            <field name="inherit_id" ref="account.view_account_payment_from_invoices" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='amount']" position="after" >
+                    <field name="payment_slip_number"
+                           attrs="{'invisible': [('payment_method_code', '==', 'check_printing')]}" />
+                    <field name="payment_slip_file"
+                           widget="image"
+                           attrs="{'invisible': [('payment_method_code', '==', 'check_printing')]}" />
+                    <field name="check_city"
+                           attrs="{'invisible': [('payment_method_code', '!=', 'check_printing')]}" />
+                    <field name="check_receiver"
+                           attrs="{'invisible': [('payment_method_code', '!=', 'check_printing')]}" />
+                    <field name="check_usetradename"
+                           attrs="{'invisible': [('payment_method_code', '!=', 'check_printing')]}" />
+                </xpath>
+                <xpath expr="//field[@name='payment_date']" position="after">
+                    <field name="secuencial" />
+                    <field name="bank_id" attrs="{'invisible': [('payment_method_code', '!=', 'tarjetacredito')], 'required': [('payment_method_code', '==', 'tarjetacredito')]}" />
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_account_supplier_payment_tree_ec" model="ir.ui.view">
+            <field name="name">Payment Ecuador tree view</field>
+            <field name="model">account.payment</field>
+            <field name="type">tree</field>
+            <field name="inherit_id" ref="account.view_account_supplier_payment_tree"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//field[@name='payment_date']" position="before" >
+                        <button name="print_checks"
+                                attrs="{'invisible': ['|', ('payment_method_code', '!=', 'check_printing'), ('state', '!=', 'posted')]}"
+                                string="Asignar número e imprimir cheque"
+                                type="object"
+                                icon="gtk-print-preview"/>
+                        <button name="unmark_sent"
+                                attrs="{'invisible': ['|', ('payment_method_code', '!=', 'check_printing'), ('state', '!=', 'sent')]}"
+                                string="Marcar cheque como no enviado para asignar un nuevo número al cheque."
+                                type="object"
+                                icon="gtk-delete" />
+                        <field name="payment_method_code" invisible="1"/>
+                    </xpath>
+                    <xpath expr="//field[@name='name']" position="after" >
+                        <field name="payment_slip_number" />
+                        <field name="secuencial" />
+                        <field name="check_number" />
+                    </xpath>
+                </data>
+            </field>
+        </record>
+
+        <record id="view_account_payment_tree_ec" model="ir.ui.view">
+            <field name="name">Payment Ecuador customer tree view</field>
+            <field name="model">account.payment</field>
+            <field name="type">tree</field>
+            <field name="inherit_id" ref="account.view_account_payment_tree"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//field[@name='name']" position="after" >
+                        <field name="payment_slip_number" />
+                        <field name="secuencial" />
+                        <field name="check_number" />
+                    </xpath>
+                </data>
+            </field>
+        </record>
+
+        <record id="view_account_payment_search_ec" model="ir.ui.view">
+            <field name="name">Payment - Ecuador Search View</field>
+            <field name="model">account.payment</field>
+            <field name="type">search</field>
+            <field name="inherit_id" ref="account.view_account_payment_search"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//field[@name='partner_id']" position="before" >
+                        <field name="secuencial" />
+                        <field name="payment_slip_number" />
+                        <field name="check_number" />
+                    </xpath>
+                </data>
+            </field>
+        </record>
+
+        <!-- Vistas para transferencias entre cuentas de la compañia-->
+
+        <record id="view_account_payment_transfer_tree" model="ir.ui.view">
+            <field name="name">account.payment.tree</field>
+            <field name="model">account.payment</field>
+            <field name="arch" type="xml">
+                <tree decoration-info="state=='draft'" decoration-muted="state=='reconciled'" edit="false">
+                    <field name="payment_date"/>
+                    <field name="name"/>
+                    <field name="journal_id"/>
+                    <field name="payment_method_id"/>
+                    <field name="destination_journal_id"/>
+                    <field name="amount"/>
+                    <field name="state"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                    <field name="currency_id" invisible="1"/>
+                    <field name="partner_type" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="action_account_payments_transfer" model="ir.actions.act_window">
+            <field name="name">Transferencias entre cuentas</field>
+            <field name="res_model">account.payment</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,graph</field>
+            <field name="context">{'default_payment_type': 'transfer'}</field>
+            <field name="domain">[('partner_type', '=', False)]</field>
+            <field name="view_id" ref="view_account_payment_transfer_tree"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Click para registrar una transferencia en cuentas de la compañia
+                </p>
+                <p>
+                </p>
+            </field>
+        </record>
+
+        <menuitem action="action_account_payments_transfer" id="menu_action_account_payments_transfer"
+                  parent="account.menu_finance_entries" sequence="0" groups="account.group_account_user"/>
+    </data>
+</odoo>
